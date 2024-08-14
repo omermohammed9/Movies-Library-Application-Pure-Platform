@@ -1,6 +1,6 @@
 //const db = require('../config/db');
 
-const db = require('../config/initDb');
+const db = require('../config/db');
 
 
 // Function to retrieve all movies
