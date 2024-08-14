@@ -1,12 +1,14 @@
 const express = require('express');
 const app = express();
 const movieRoute = require('./routes/movieRoute');
+const directorRoute = require('./routes/directorRoute');
 
 
 app.use(express.json())
 
 
 app.use('/movies', movieRoute);
+app.use('/directors', directorRoute);
 
 
 // Error handling middleware (optional)
