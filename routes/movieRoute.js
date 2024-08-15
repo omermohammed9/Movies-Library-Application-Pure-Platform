@@ -17,4 +17,10 @@ router.put('/:id', movieController.updateMovie);
 // Route to delete a movie
 router.delete('/:id', movieController.deleteMovie);
 
+// Route to add actors to a movie
+router.post('/:id/add/actors', movieController.addActorsToMovie);
+
+// Route to get a movie with its actors
+router.get('/:id/actors', movieController.getMovieWithActors);
+
 module.exports = router;

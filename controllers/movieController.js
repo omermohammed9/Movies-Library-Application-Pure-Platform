@@ -15,18 +15,25 @@ exports.getAllMovies = (req, res) => {
 };
 
 exports.createMovie = (req, res) => {
-    const { title, description, release_year, genre, director_id, image_url } = req.body;
-    movieModel.createMovie({ title, description, release_year, genre, director_id, image_url }, (err, result) => {
+    const { title, description, release_year, genre, director_name, image_url, actors } = req.body;
+
+    // Validate actors array
+    if (!Array.isArray(actors) || actors.length === 0) {
+        return res.status(400).json({ error: "'actors' must be a non-empty array of actor names." });
+    }
+
+    movieModel.createMovie({ title, description, release_year, genre, director_name, image_url, actors }, (err, result) => {
         if (err) {
-            res.status(500).json({ error: err.message });
+            res.status(500).json({ error: err });
             return;
         }
         res.json({
-            message: "Movie created successfully",
+            message: "Movie and related entities created successfully",
             data: result
         });
     });
-}
+};
+
 
 exports.getMovieById = (req, res) => {
     const id = req.params.id;
@@ -70,3 +77,46 @@ exports.deleteMovie = (req, res) => {
         });
     });
 }
+
+// Controller function to handle adding actors to a movie
+exports.addActorsToMovie = (req, res) => {
+    const { movie_id, actors } = req.body;
+
+    // Check if 'movie_id' is a number
+    if (typeof movie_id !== 'number') {
+        return res.status(400).json({ error: "'movie_id' must be a number." });
+    }
+    // Check if 'actors' is a number (single actor) or an array
+    let actorIds = [];
+    if (Array.isArray(actors)) {
+        actorIds = actors;
+    } else if (typeof actors === 'number') {
+        actorIds = [actors];  // Wrap single actor ID in an array
+    } else {
+        return res.status(400).json({ error: "'actors' must be a number or an array of actor IDs." });
+    }
+
+    movieModel.addActorsToMovie(movie_id, actors, (err, result) => {
+        if (err) {
+            res.status(500).json({ error: err });
+        } else {
+            res.json({ message: result });
+        }
+    });
+};
+
+// Controller function to get a movie with its actors
+exports.getMovieWithActors = (req, res) => {
+    const { id } = req.params;
+
+    movieModel.getMovieWithActors(id, (err, actors) => {
+        if (err) {
+            res.status(500).json({ error: err.message });
+        } else {
+            res.json({
+                message: "Success",
+                data: actors
+            });
+        }
+    });
+};
