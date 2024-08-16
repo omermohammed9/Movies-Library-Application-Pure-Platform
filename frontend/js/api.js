@@ -84,6 +84,7 @@ const editMovie = (movieId, movieData) => {
 
 
 const createDirector = (directorData) => {
+    console.log('Director Data:', directorData);
     return fetch(`${API_BASE_URL}/directors/add`, {
         method: 'POST',
         headers: {
