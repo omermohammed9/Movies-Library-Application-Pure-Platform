@@ -33,38 +33,68 @@ const createMovie = async (movieData, callback) => {
     const { title, description, release_year, genre, director_name, image_url, actors } = movieData;
 
     try {
-        // Find or create director
+        // Check if the director already exists in the database
         let director = await db.get(`SELECT * FROM Directors WHERE name = ?`, [director_name]);
+
         if (!director) {
-            await db.run(`INSERT INTO Directors (name) VALUES (?)`, [director_name]);
-            director = await db.get(`SELECT * FROM Directors WHERE name = ?`, [director_name]);
+            // If the director doesn't exist, insert it
+            await new Promise((resolve, reject) => {
+                db.run(`INSERT INTO Directors (name) VALUES (?)`, [director_name], function (err) {
+
+                    if (err) return reject(err);
+                    director = { id: this.lastID };  // Get the inserted director's ID
+                    console.log(director_name, director.id);
+                    resolve();
+                });
+            });
         }
 
-        // Insert movie with director_id
-        const sql = `INSERT INTO Movies (title, description, release_year, genre, director_id, image_url) 
-                     VALUES (?, ?, ?, ?, ?, ?)`;
-        await db.run(sql, [title, description, release_year, genre, director.id, image_url]);
+        console.log("Director ID:", director.id);  // Log the director ID
 
-        // Get the inserted movie ID
-        const movie = await db.get(`SELECT * FROM Movies WHERE title = ?`, [title]);
+        // Insert the movie with the director_id and get the movie ID
+        await new Promise((resolve, reject) => {
+            const sql = `INSERT INTO Movies (title, description, release_year, genre, director_id, image_url)
+                         VALUES (?, ?, ?, ?, ?, ?)`;
+            db.run(sql, [title, description, release_year, genre, director.id, image_url], function (err) {
+                if (err) return reject(err);
+                movieData.id = this.lastID;  // Get the last inserted movie ID
+                resolve();
+            });
+        });
 
-        // Find or create actors and link them to the movie
-        let errors = [];
+        console.log("Movie ID:", movieData.id);  // Log the movie ID
+
+        // Handle linking actors (explained in the next section)
         for (let actor_name of actors) {
             let actor = await db.get(`SELECT * FROM Actors WHERE name = ?`, [actor_name]);
+
             if (!actor) {
-                await db.run(`INSERT INTO Actors (name) VALUES (?)`, [actor_name]);
-                actor = await db.get(`SELECT * FROM Actors WHERE name = ?`, [actor_name]);
+                await new Promise((resolve, reject) => {
+                    db.run(`INSERT INTO Actors (name) VALUES (?)`, [actor_name], function (err) {
+                        if (err) return reject(err);
+                        actor = { id: this.lastID };  // Get the last inserted actor ID
+                        resolve();
+                    });
+                });
             }
+
             // Link actor to the movie
-            await db.run(`INSERT INTO Movie_Actors (movie_id, actor_id) VALUES (?, ?)`, [movie.id, actor.id]);
+            await new Promise((resolve, reject) => {
+                db.run(`INSERT INTO Movie_Actors (movie_id, actor_id) VALUES (?, ?)`, [movieData.id, actor.id], function (err) {
+                    if (err) return reject(err);
+                    resolve();
+                });
+            });
         }
 
         callback(null, 'Movie and related entities created successfully');
     } catch (error) {
+        console.error("Error creating movie:", error.message);
         callback(error.message, null);
     }
 };
+
+
 
 // Function to update an existing movie
 const updateMovie = (id, movieData, callback) => {
@@ -88,43 +118,107 @@ const deleteMovie = (id, callback) => {
 };
 
 // Function to add actors to a movie
-const addActorsToMovie = (movie_id, actors, callback) => {
+const addActorsToMovie = async (movie_id, actors, callback) => {
     const sql = `INSERT INTO Movie_Actors (movie_id, actor_id) VALUES (?, ?)`;
     let errors = [];
 
-    actors.forEach(actor_id => {
-        db.run(sql, [movie_id, actor_id], (err) => {
-            if (err) {
-                errors.push(err.message);
-            }
-        });
-    });
+    try {
+        await Promise.all(actors.map(actor_id => {
+            return new Promise((resolve, reject) => {
+                db.run(sql, [movie_id, actor_id], (err) => {
+                    if (err) {
+                        errors.push(err.message);
+                        return reject(err);
+                    }
+                    resolve();
+                });
+            });
+        }));
 
-    if (errors.length > 0) {
-        callback(errors.join(', '), null);
-    } else {
-        callback(null, 'Actors added successfully');
+        if (errors.length > 0) {
+            callback(errors.join(', '), null);
+        } else {
+            callback(null, 'Actors added successfully');
+        }
+    } catch (error) {
+        callback(error.message, null);
     }
 };
 
+
 // Function to retrieve a movie with its associated actors
 const getMovieWithActors = (movie_id, callback) => {
-    const sql = `
-        SELECT Movies.title, Actors.name
+    const sqlMovie = `
+        SELECT Movies.*, Directors.name as director_name
         FROM Movies
-        JOIN Movie_Actors ON Movies.id = Movie_Actors.movie_id
-        JOIN Actors ON Movie_Actors.actor_id = Actors.id
-        WHERE Movies.id = ?
+        LEFT JOIN Directors ON Movies.director_id = Directors.id
+        WHERE Movies.id = ?;
     `;
 
-    db.all(sql, [movie_id], (err, rows) => {
+    const sqlActors = `
+        SELECT Actors.name, Actors.age, Actors.country_of_origin
+        FROM Actors
+        JOIN Movie_Actors ON Movie_Actors.actor_id = Actors.id
+        WHERE Movie_Actors.movie_id = ?;
+    `;
+
+    db.get(sqlMovie, [movie_id], (err, movie) => {
         if (err) {
-            callback(err, null);
-        } else {
-            callback(null, rows);
+            return callback(err, null);
         }
+
+        if (!movie) {
+            return callback(new Error('Movie not found'), null);
+        }
+
+        db.all(sqlActors, [movie_id], (err, actors) => {
+            if (err) {
+                return callback(err, null);
+            }
+
+            movie.actors = actors;  // Attach actors to movie
+            return callback(null, movie);  // Return full movie details
+        });
     });
 };
+
+// const getMovieWithActors = (movie_id, callback) => {
+//     const sql = `
+//         SELECT Actors.name, Actors.age, Actors.country_of_origin
+//         FROM Actors
+//         JOIN Movie_Actors ON Movie_Actors.actor_id = Actors.id
+//         WHERE Movie_Actors.movie_id = ?;
+//     `;
+//
+//     db.all(sql, [movie_id], (err, actors) => {
+//         if (err) {
+//             return callback(err, null);
+//         }
+//
+//         callback(null, actors);  // Return the list of actors
+//     });
+// };
+
+
+
+
+// const getMovieWithActors = (movie_id, callback) => {
+//     const sql = `
+//          SELECT Movies.title, Actors.name
+//         FROM Movies
+//         JOIN Movie_Actors ON Movies.id = Movie_Actors.movie_id
+//         JOIN Actors ON Movie_Actors.actor_id = Actors.id
+//         WHERE Movies.id = ?
+//     `;
+//
+//     db.all(sql, [movie_id], (err, rows) => {
+//         if (err) {
+//             callback(err, null);
+//         } else {
+//             callback(null, rows);
+//         }
+//     });
+// };
 
 
 // Export the functions to be used in the controller

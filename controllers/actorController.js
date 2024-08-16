@@ -6,10 +6,7 @@ exports.getAllActors = (req, res) => {
             res.status(500).json({ error: err.message });
             return;
         }
-        res.json({
-            message: "Success",
-            data: rows
-        });
+        res.status(200).json({ message: "Success", data: rows });
     });
 };
 
@@ -20,10 +17,7 @@ exports.getActorById = (req, res) => {
             res.status(500).json({ error: err.message });
             return;
         }
-        res.json({
-            message: "Success",
-            data: result
-        });
+        res.status(200).json({ message: "Success", data: result });
     });
 };
 exports.createActor = (req, res) => {
@@ -33,10 +27,8 @@ exports.createActor = (req, res) => {
             res.status(500).json({ error: err.message });
             return;
         }
-        res.json({
-            message: "Actor created successfully",
-            data: result
-        });
+        //res.json(200).json({ message: "Actor created successfully", result });
+        return res.status(200).json({ message: "Actor created successfully", result });
     });
 };
 
@@ -48,10 +40,7 @@ exports.updateActor = (req, res) => {
             res.status(500).json({ error: err.message });
             return;
         }
-        res.json({
-            message: "Actor updated successfully",
-            data: result
-        });
+        res.json(200).json({ message: "Actor updated successfully", result });
     });
 };
 
@@ -62,9 +51,6 @@ exports.deleteActor = (req, res) => {
             res.status(500).json({ error: err.message });
             return;
         }
-        res.json({
-            message: "Actor deleted successfully",
-            data: result
-        });
+        res.status(200).json({ message: "Actor deleted successfully", result });
     });
 };

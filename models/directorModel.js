@@ -15,32 +15,11 @@ const getDirectorById = (id, callback) => {
 
 const createDirector = (directorData, callback) => {
     const { name, age, country_of_origin } = directorData;
-
-    // SQL query to check if the director already exists
-    const checkSql = 'SELECT * FROM Directors WHERE name = ? AND age = ? AND country_of_origin = ?';
-
-    // First, check if the director already exists
-    db.get(checkSql, [name, age, country_of_origin], (err, row) => {
-        if (err) {
-            return callback(err);
-        }
-
-        if (row) {
-            // If the director exists, return an error message or handle as needed
-            return callback(new Error('Director with the same data already exists'), null);
-        } else {
-            // If the director does not exist, proceed with the insertion
-            const insertSql = 'INSERT INTO Directors (name, age, country_of_origin) VALUES (?, ?, ?)';
-            db.run(insertSql, [name, age, country_of_origin], function (err) {
-                if (err) {
-                    return callback(err);
-                }
-                callback(null, this.lastID); // Return the last inserted ID
-            });
-        }
+    const sql = 'INSERT INTO Directors (name, age, country_of_origin) VALUES (?, ?, ?)';
+    db.run(sql, [name, age, country_of_origin], function (err) {
+        callback(err, this.lastID);
     });
 };
-
 
 const updateDirector = (id, directorData, callback) => {
     const { name, age, country_of_origin } = directorData;

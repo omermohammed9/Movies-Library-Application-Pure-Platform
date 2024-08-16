@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Details</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../frontend/CSS/styles.css">
+</head>
+<body>
+<div class="container mt-5">
+    <div id="movie-details">
+        <h1 id="movie-title"></h1>
+        <img id="movie-image" class="img-fluid" alt="Movie Poster">
+        <p><strong>Release Year:</strong> <span id="movie-release-year"></span></p>
+        <p><strong>Genre:</strong> <span id="movie-genre"></span></p>
+        <p><strong>Description:</strong></p>
+        <p id="movie-description"></p>
+
+        <h3>Director</h3>
+        <p id="movie-director"></p>
+
+        <h3>Actors</h3>
+        <ul id="movie-actors"></ul>
+    </div>
+</div>
+
+<!-- jQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+<!-- Bootstrap JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+
+<!-- Movie Details Script -->
+<script src="../frontend/js/movie-details.js"></script>
+</body>
+</html>

@@ -1,4 +1,7 @@
 import { fetchMovies, fetchMovieWithActors, addMovie, deleteMovie, editMovie, createActor, createDirector } from './api.js';
+import {collectActorsData, collectDirectorData, collectMovieData} from "./utility.js";
+import {createMovieCard} from "./movieCard.js";
+import {submitForm} from "./submitform";
 // import {updateMovie} from "../../models/movieModel";
 //import {deleteMovie} from "../../models/movieModel";
 
@@ -15,45 +18,11 @@ $(document).ready(function () {
         fetchMovies()
             .then(response => {
                 const movies = response.data;
-
                 if (!movies || movies.length === 0) {
                     $moviesList.html('<p>No movies available. Add one!</p>');
                 } else {
                     movies.forEach(movie => {
-                        const movieCard = `
-                            <div class="col-md-4">
-                                <div class="movie-card position-relative">
-                                    <img src="${movie.image_url}" alt="${movie.title}">
-                                    <div class="card-body">
-                                        <h5 class="card-title">${movie.title}</h5>
-                                        <div class="movie-stats">
-                                            <div>
-                                                <span>01:37</span>
-                                                <small>Length</small>
-                                            </div>
-                                            <div>
-                                                <span>Eng</span>
-                                                <small>Lang</small>
-                                            </div>
-                                            <div>
-                                                <span>6.4</span>
-                                                <small>Rating</small>
-                                            </div>
-                                            <div>
-                                                <span>45+</span>
-                                                <small>Review</small>
-                                            </div>
-                                        </div>
-                                        <div class="edit-button" data-id="${movie.id}">
-                                            <i class="fas fa-edit"></i>
-                                        </div>
-                                        <div class="delete-button" data-id="${movie.id}">
-                                            <i class="fas fa-trash"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        `;
+                        const movieCard = createMovieCard(movie);
                         $moviesList.append(movieCard);
                     });
 
@@ -67,6 +36,11 @@ $(document).ready(function () {
                         const movieId = $(this).data('id');
                         loadMovieDetailsForEdit(movieId);
                     });
+                    $('.movie-card').on('click', function () {
+                        const movieId = $(this).data('id');
+                        window.location.href = `./frontend/movie-details.html?id=${movieId}`;
+                        //loadMovieDetails(movieId);
+                    })
                 }
             })
             .catch(error => {
@@ -77,48 +51,7 @@ $(document).ready(function () {
     // Handle movie form submission (adding a new movie)
     $addMovieForm.on('submit', function (e) {
         e.preventDefault();
-        const formData = new FormData(this);
-
-        // Collect director and actor details
-        const movieData = {
-            title: formData.get('title'),
-            description: formData.get('description'),
-            release_year: formData.get('release_year'),
-            genre: formData.get('genre'),
-            image_url: formData.get('image_url'),
-        };
-
-        // Collect director details
-        const directorData = {
-            name: formData.get('director_name'),
-            age: formData.get('director_age'),
-            country_of_origin: formData.get('director_country')
-        };
-
-        // Collect actor details
-        const actorNames = formData.get('actors').split(',').map(name => name.trim());
-        const actorAges = formData.get('actor_ages').split(',').map(age => age.trim());
-        const actorCountries = formData.get('actor_countries').split(',').map(country => country.trim());
-        const actors = actorNames.map((name, index) => ({
-            name,
-            age: actorAges[index],
-            country_of_origin: actorCountries[index]
-        }));
-
-        // First create the director, then the actors, then finally add the movie
-        createDirector(directorData)
-            .then(director => {
-                movieData.director_id = director.id;  // Assign director ID
-
-                // Create actors and return their IDs
-                return Promise.all(actors.map(actor => createActor(actor)));
-            })
-            .then(actorResponses => {
-                movieData.actors = actorResponses.map(actor => actor.id);  // Assign actor IDs
-
-                // Now add the movie with the director and actors' IDs
-                return addMovie(movieData);
-            })
+        submitForm(this)
             .then(() => {
                 Swal.fire({
                     title: 'Success!',
@@ -180,7 +113,7 @@ $(document).ready(function () {
     const loadMovieDetailsForEdit = (movieId) => {
         fetchMovieWithActors(movieId)
             .then(response => {
-                const movie = response.data[0];  // Assuming the movie data is in the first index
+                const movie = response;  // Assuming the movie data is in the first index
                 $('#edit-title').val(movie.title);
                 $('#edit-description').val(movie.description);
                 $('#edit-release_year').val(movie.release_year);

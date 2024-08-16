@@ -6,10 +6,7 @@ exports.getAllDirectors = (req, res) => {
             res.status(500).json({ error: err.message });
             return;
         }
-        res.json({
-            message: "Success",
-            data: rows
-        });
+        res.status(200).json({ message: "Success", data: rows });
     });
 };
 
@@ -20,11 +17,9 @@ exports.createDirector = (req, res) => {
             res.status(500).json({ error: err.message });
             return;
         }
-        res.json({
-            message: "Director created successfully",
-            data: result
-        });
-    });
+        //res.json(200).json({ message: "Director created successfully", result });
+
+        return res.status(200).json({ message: "Director created successfully", result });r});
 };
 
 exports.getDirectorById = (req, res) => {
@@ -34,10 +29,7 @@ exports.getDirectorById = (req, res) => {
             res.status(500).json({ error: err.message });
             return;
         }
-        res.json({
-            message: "Success",
-            data: result
-        });
+        res.json(200).json({ message: "Success", data: result });
     });
 };
 
@@ -49,10 +41,7 @@ exports.updateDirector = (req, res) => {
             res.status(500).json({ error: err.message });
             return;
         }
-        res.json({
-            message: "Director updated successfully",
-            data: result
-        });
+        res.json(200).json({ message: "Director updated successfully", result });
     });
 };
 
@@ -63,9 +52,9 @@ exports.deleteDirector = (req, res) => {
             res.status(500).json({ error: err.message });
             return;
         }
-        res.json({
-            message: "Director deleted successfully",
-            data: result
-        });
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ message: "Director not found" });
+        }
+        res.status(200).json({ message: "Director deleted successfully", result });
     });
 };

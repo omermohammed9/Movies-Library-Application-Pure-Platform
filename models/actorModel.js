@@ -15,32 +15,11 @@ const getActorById = (id, callback) => {
 
 const createActor = (actorData, callback) => {
     const { name, age, country_of_origin } = actorData;
-
-    // SQL query to check if the actor already exists
-    const checkSql = 'SELECT * FROM actors WHERE name = ? AND age = ? AND country_of_origin = ?';
-
-    // First, check if the actor already exists
-    db.get(checkSql, [name, age, country_of_origin], (err, row) => {
-        if (err) {
-            return callback(err);
-        }
-
-        if (row) {
-            // If the actor exists, return an error message or handle as needed
-            return callback(new Error('Actor with the same data already exists'), null);
-        } else {
-            // If the actor does not exist, proceed with the insertion
-            const insertSql = 'INSERT INTO actors (name, age, country_of_origin) VALUES (?, ?, ?)';
-            db.run(insertSql, [name, age, country_of_origin], function (err) {
-                if (err) {
-                    return callback(err);
-                }
-                callback(null, this.lastID); // Return the last inserted ID
-            });
-        }
+    const sql = 'INSERT INTO actors (name, age, country_of_origin) VALUES (?, ?, ?)';
+    db.run(sql, [name, age, country_of_origin], function (err) {
+        callback(err, this.lastID);
     });
 };
-
 
 const  updateActor = (id, actorData, callback) => {
     const { name, age, country_of_origin } = actorData;

@@ -1,4 +1,4 @@
-const movieModel = require('../models/movieModel');
+﻿const movieModel = require('../models/movieModel');
 
 // Example usage in controller
 exports.getAllMovies = (req, res) => {
@@ -109,14 +109,28 @@ exports.addActorsToMovie = (req, res) => {
 exports.getMovieWithActors = (req, res) => {
     const { id } = req.params;
 
-    movieModel.getMovieWithActors(id, (err, actors) => {
+    movieModel.getMovieWithActors(id, (err, movie) => {
         if (err) {
-            res.status(500).json({ error: err.message });
-        } else {
-            res.json({
-                message: "Success",
-                data: actors
-            });
+            return res.status(500).json({ error: err.message });
         }
+
+        if (!movie) {
+            return res.status(404).json({ message: 'Movie not found' });
+        }
+
+        // Return full movie details including actors
+        return res.status(200).json({ message: "Success", movie });
     });
 };
+
+// exports.getMovieWithActors = (req, res) => {
+//     const { id } = req.params;
+//
+//     movieModel.getMovieWithActors(id, (err, actors) => {
+//         if (err) {
+//             res.status(500).json({ error: err.message });
+//         } else {
+//             res.status(200).json({ message: "Success", data: actors });
+//         }
+//     });
+// };
