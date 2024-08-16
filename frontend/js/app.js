@@ -49,7 +49,7 @@ $(document).ready(function () {
     // Handle movie form submission (adding a new movie)
     $addMovieForm.on('submit', function (e) {
         e.preventDefault();
-        submitForm(this)
+        submitForm.call(this)
             .then(() => {
                 Swal.fire({
                     title: 'Success!',

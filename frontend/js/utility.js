@@ -8,11 +8,17 @@ const collectMovieData = (formData) => ({
 });
 
 // Utility function to collect director data from the form
-const collectDirectorData = (formData) => ({
-    name: formData.get('director_name'),
-    age: formData.get('director_age'),
-    country_of_origin: formData.get('director_country'),
-});
+const collectDirectorData = (formData) => {
+    console.log(formData.get('director_name'));  // Should log the director's name
+    console.log(formData.get('director_age'));   // Should log the director's age
+    console.log(formData.get('director_country')); // Should log the director's country
+    return {
+        name: formData.get('director_name'),
+        age: formData.get('director_age'),
+        country_of_origin: formData.get('director_country'),
+    };
+};
+
 
 // Utility function to collect actors data from the form
 const collectActorsData = (formData) => {

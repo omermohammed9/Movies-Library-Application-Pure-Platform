@@ -3,10 +3,13 @@ import {addMovie, createActor, createDirector} from "./api.js";
 
 async function submitForm() {
     try {
+        console.log(this);
         const formData = new FormData(this);
         const movieData = collectMovieData(formData);
         const directorData = collectDirectorData(formData);
+        console.log(directorData);
         const actorsData = collectActorsData(formData);
+        console.log(actorsData);
 
         // Create director and get their ID
         const director = await createDirector(directorData);
