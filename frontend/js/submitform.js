@@ -1,5 +1,5 @@
-import {collectActorsData, collectDirectorData, collectMovieData} from "./utility";
-import {addMovie, createActor, createDirector} from "./api";
+import {collectActorsData, collectDirectorData, collectMovieData} from "./utility.js";
+import {addMovie, createActor, createDirector} from "./api.js";
 
 async function submitForm() {
     try {

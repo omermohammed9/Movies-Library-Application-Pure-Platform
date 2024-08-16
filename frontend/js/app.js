@@ -1,9 +1,7 @@
-import { fetchMovies, fetchMovieWithActors, addMovie, deleteMovie, editMovie, createActor, createDirector } from './api.js';
-import {collectActorsData, collectDirectorData, collectMovieData} from "./utility.js";
+import { fetchMovies, fetchMovieWithActors, deleteMovie, editMovie } from './api.js';
 import {createMovieCard} from "./movieCard.js";
-import {submitForm} from "./submitform";
-// import {updateMovie} from "../../models/movieModel";
-//import {deleteMovie} from "../../models/movieModel";
+import {submitForm} from "./submitform.js";
+
 
 $(document).ready(function () {
     const $moviesList = $('#movies-container');
