@@ -84,19 +84,34 @@ header {
     font-size: 1.5rem;
 }
 
+/* Add hover effect for clickable image and title */
+.movie-card a {
+    text-decoration: none;
+    color: inherit; /* Maintain text color */
+}
+
+.movie-card img:hover,
+.movie-card .card-title:hover {
+    opacity: 0.8; /* Visually indicate the element is clickable */
+    cursor: pointer;
+}
+
+
 /* Delete Button */
 .movie-card .delete-button {
     position: absolute;
     top: 10px;
     right: 10px;
-    cursor: pointer;
     background-color: #dc3545;
     color: #fff;
     border-radius: 50%;
     padding: 5px;
+    cursor: pointer;
 }
 
-
+.movie-card .delete-button:hover {
+    background-color: #c82333;
+}
 
 
 

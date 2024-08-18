@@ -25,7 +25,8 @@ $(document).ready(function () {
                     });
 
                     // Add event listeners for delete and edit buttons
-                    $('.delete-button').on('click', function () {
+                    $('.delete-button').on('click', function (e) {
+                        e.stopPropagation()
                         const movieId = $(this).data('id');
                         confirmDelete(movieId);
                     });

@@ -1,6 +1,7 @@
 //const db = require('../config/db');
 
 const db = require('../config/db');
+const { getDirectorByName} = require("../models/directorModel");
 
 
 // Function to retrieve all movies
@@ -28,28 +29,39 @@ const getMovieById = (id, callback) => {
 
 
 
+
+
 // Function to create a new movie
 const createMovie = async (movieData, callback) => {
     const { title, description, release_year, genre, director_name, image_url, actors } = movieData;
 
+    console.log("Director Name:", director_name);
+
+    // Validate director_name
+    if (!director_name || director_name.trim() === "") {
+        throw new Error("Director name cannot be empty");
+    }
+
+
     try {
-        // Check if the director already exists in the database
-        let director = await db.get(`SELECT * FROM Directors WHERE name = ?`, [director_name]);
+        // Check if the director exists in the database
+        let director = await getDirectorByName(director_name);
+
+        // Log the director name
 
         if (!director) {
             // If the director doesn't exist, insert it
             await new Promise((resolve, reject) => {
                 db.run(`INSERT INTO Directors (name) VALUES (?)`, [director_name], function (err) {
-
                     if (err) return reject(err);
                     director = { id: this.lastID };  // Get the inserted director's ID
-                    console.log(director_name, director.id);
                     resolve();
                 });
             });
         }
 
-        console.log("Director ID:", director.id);  // Log the director ID
+        // Log the director ID for debugging
+        console.log("Director ID:", director.id);
 
         // Insert the movie with the director_id and get the movie ID
         await new Promise((resolve, reject) => {
@@ -62,9 +74,10 @@ const createMovie = async (movieData, callback) => {
             });
         });
 
-        console.log("Movie ID:", movieData.id);  // Log the movie ID
+        // Log the movie ID for debugging
+        console.log("Movie ID:", movieData.id);
 
-        // Handle linking actors (explained in the next section)
+        // Handle linking actors
         for (let actor_name of actors) {
             let actor = await db.get(`SELECT * FROM Actors WHERE name = ?`, [actor_name]);
 
@@ -87,12 +100,14 @@ const createMovie = async (movieData, callback) => {
             });
         }
 
+        // Callback to confirm successful creation
         callback(null, 'Movie and related entities created successfully');
     } catch (error) {
         console.error("Error creating movie:", error.message);
         callback(error.message, null);
     }
 };
+
 
 
 

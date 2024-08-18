@@ -5,6 +5,7 @@ const collectMovieData = (formData) => ({
     release_year: formData.get('release_year'),
     genre: formData.get('genre'),
     image_url: formData.get('image_url'),
+    director_name: formData.get('director_name'),
 });
 
 // Utility function to collect director data from the form

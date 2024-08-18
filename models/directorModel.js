@@ -13,6 +13,19 @@ const getDirectorById = (id, callback) => {
     });
 };
 
+const getDirectorByName = async (name) => {
+    const sql = 'SELECT * FROM Directors WHERE name = ?';
+    return new Promise((resolve, reject) => {
+        db.get(sql, [name], (err, row) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(row);
+            }
+        });
+    });
+};
+
 const createDirector = (directorData, callback) => {
     const { name, age, country_of_origin } = directorData;
     const sql = 'INSERT INTO Directors (name, age, country_of_origin) VALUES (?, ?, ?)';
@@ -41,5 +54,6 @@ module.exports = {
     getDirectorById,
     createDirector,
     updateDirector,
-    deleteDirector
+    deleteDirector,
+    getDirectorByName
 }

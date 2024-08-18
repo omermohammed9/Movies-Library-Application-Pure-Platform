@@ -29,9 +29,21 @@ exports.getDirectorById = (req, res) => {
             res.status(500).json({ error: err.message });
             return;
         }
-        res.json(200).json({ message: "Success", data: result });
+        res.status(200).json({ message: "Success", data: result });
     });
 };
+
+exports.getDirectorByName = (req, res) => {
+    const name = req.params.name;
+    directorModel.getDirectorByName(name, (err, result) => {
+        if (err) {
+            res.status(500).json({ error: err.message });
+            return;
+        }
+        res.status(200).
+        json({ message: "Success director name has been found", data: result });
+    });
+}
 
 exports.updateDirector = (req, res) => {
     const id = req.params.id;
@@ -41,7 +53,7 @@ exports.updateDirector = (req, res) => {
             res.status(500).json({ error: err.message });
             return;
         }
-        res.json(200).json({ message: "Director updated successfully", result });
+        res.status(200).json({ message: "Director updated successfully", result });
     });
 };
 

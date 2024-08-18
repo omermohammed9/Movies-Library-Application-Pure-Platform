@@ -17,4 +17,6 @@ router.put('/:id', directorController.updateDirector);
 // Route to delete a director
 router.delete('/:id', directorController.deleteDirector);
 
+router.get('/:name', directorController.getDirectorByName);
+
 module.exports = router;
