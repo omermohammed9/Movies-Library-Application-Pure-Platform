@@ -13,6 +13,19 @@ const getActorById = (id, callback) => {
     });
 };
 
+// Function to get actors by names
+const getActorsByName = (actorNames) => {
+    return new Promise((resolve, reject) => {
+        const placeholders = actorNames.map(() => '?').join(',');  // Create placeholders for SQL query
+        const sql = `SELECT * FROM Actors WHERE name IN (${placeholders})`;
+
+        db.all(sql, actorNames, (err, rows) => {
+            if (err) return reject(err);
+            resolve(rows);  // Return all actors found in the database
+        });
+    });
+};
+
 const createActor = (actorData, callback) => {
     const { name, age, country_of_origin } = actorData;
     const sql = 'INSERT INTO actors (name, age, country_of_origin) VALUES (?, ?, ?)';
@@ -39,6 +52,7 @@ const deleteActor = (id, callback) => {
 module.exports = {
     getAllActors,
     getActorById,
+    getActorsByName,
     createActor,
     updateActor,
     deleteActor
