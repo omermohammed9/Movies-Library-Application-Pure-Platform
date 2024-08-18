@@ -16,8 +16,18 @@ async function submitForm() {
         movieData.director_id = director.id;
 
         // Create actors in parallel and get their IDs
-        const actorResponses = await Promise.all(actorsData.map(actor => createActor(actor)));
-        movieData.actors = actorResponses.map(actor => actor.id);
+        if (!actorsData || actorsData.length === 0) {
+            console.warn("No actors to create.");
+            movieData.actors = [];
+        } else {
+            const actorResponses = await Promise.all(actorsData.map(actor => createActor(actor)));
+            movieData.actors = actorResponses.map(actor => actor.id);
+        }
+
+
+
+        // const actorResponses = await Promise.all(actorsData.map(actor => createActor(actor)));
+        // movieData.actors = actorResponses.map(actor => actor.id);
 
         // Finally, add the movie
         await addMovie(movieData);

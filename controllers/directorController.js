@@ -1,12 +1,20 @@
 const directorModel = require('../models/directorModel');
 
 exports.getAllDirectors = (req, res) => {
+    console.log('Received request for all directors');  // Log request receipt
     directorModel.getAllDirectors((err, rows) => {
         if (err) {
-            res.status(500).json({ error: err.message });
-            return;
+            console.error('Error querying directors:', err.message);  // Log errors
+            return res.status(500).json({ error: err.message });
         }
-        res.status(200).json({ message: "Success", data: rows });
+
+        if (rows.length === 0) {
+            console.log('No directors found');  // Log empty result
+            return res.status(404).json({ message: "No directors found" });
+        }
+
+        console.log('Successfully retrieved directors');  // Log success
+        return res.status(200).json({ message: "Success", data: rows });
     });
 };
 
@@ -35,15 +43,22 @@ exports.getDirectorById = (req, res) => {
 
 exports.getDirectorByName = (req, res) => {
     const name = req.params.name;
+
+    // Call the model function to get the director by name
     directorModel.getDirectorByName(name, (err, result) => {
         if (err) {
-            res.status(500).json({ error: err.message });
-            return;
+            return res.status(500).json({ error: err.message });
         }
-        res.status(200).
-        json({ message: "Success director name has been found", data: result });
+
+        // Handle the case where the director is not found
+        if (!result) {
+            return res.status(404).json({ message: `Director ${name} not found` });
+        }
+
+        // If found, return the director details
+        return res.status(200).json({ message: "Success, director found", data: result });
     });
-}
+};
 
 exports.updateDirector = (req, res) => {
     const id = req.params.id;

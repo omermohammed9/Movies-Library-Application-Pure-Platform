@@ -1,7 +1,10 @@
 //const db = require('../config/db');
 
 const db = require('../config/db');
-const { getDirectorByName} = require("../models/directorModel");
+const {insertMovie} = require("../helpers/insertmovie.js");
+const {processActors} = require("../helpers/processactors.js");
+const {linkActorsToMovie} = require("../helpers/linkactors.js");
+const getOrCreateDirector = require("../helpers/getOrCreateDirector");
 
 
 // Function to retrieve all movies
@@ -35,70 +38,28 @@ const getMovieById = (id, callback) => {
 const createMovie = async (movieData, callback) => {
     const { title, description, release_year, genre, director_name, image_url, actors } = movieData;
 
-    console.log("Director Name:", director_name);
-
-    // Validate director_name
-    if (!director_name || director_name.trim() === "") {
-        throw new Error("Director name cannot be empty");
-    }
-
-
     try {
-        // Check if the director exists in the database
-        let director = await getDirectorByName(director_name);
+        console.log("Director Name:", director_name);
 
-        // Log the director name
-
-        if (!director) {
-            // If the director doesn't exist, insert it
-            await new Promise((resolve, reject) => {
-                db.run(`INSERT INTO Directors (name) VALUES (?)`, [director_name], function (err) {
-                    if (err) return reject(err);
-                    director = { id: this.lastID };  // Get the inserted director's ID
-                    resolve();
-                });
-            });
+        // Validate director_name
+        if (!director_name || director_name.trim() === "") {
+            throw new Error("Director name cannot be empty");
         }
 
-        // Log the director ID for debugging
+        // Ensure director exists or create a new one
+        let director = await getOrCreateDirector(director_name);
         console.log("Director ID:", director.id);
 
-        // Insert the movie with the director_id and get the movie ID
-        await new Promise((resolve, reject) => {
-            const sql = `INSERT INTO Movies (title, description, release_year, genre, director_id, image_url)
-                         VALUES (?, ?, ?, ?, ?, ?)`;
-            db.run(sql, [title, description, release_year, genre, director.id, image_url], function (err) {
-                if (err) return reject(err);
-                movieData.id = this.lastID;  // Get the last inserted movie ID
-                resolve();
-            });
-        });
+        // Insert the movie and get the movie ID
+        const movieId = await insertMovie({ title, description, release_year, genre, director_id: director.id, image_url });
+        console.log("Movie ID:", movieId);
 
-        // Log the movie ID for debugging
-        console.log("Movie ID:", movieData.id);
+        // Handle actors: fetch existing actors and insert new ones
+        const existingActorIds = await processActors(actors);
 
-        // Handle linking actors
-        for (let actor_name of actors) {
-            let actor = await db.get(`SELECT * FROM Actors WHERE name = ?`, [actor_name]);
-
-            if (!actor) {
-                await new Promise((resolve, reject) => {
-                    db.run(`INSERT INTO Actors (name) VALUES (?)`, [actor_name], function (err) {
-                        if (err) return reject(err);
-                        actor = { id: this.lastID };  // Get the last inserted actor ID
-                        resolve();
-                    });
-                });
-            }
-
-            // Link actor to the movie
-            await new Promise((resolve, reject) => {
-                db.run(`INSERT INTO Movie_Actors (movie_id, actor_id) VALUES (?, ?)`, [movieData.id, actor.id], function (err) {
-                    if (err) return reject(err);
-                    resolve();
-                });
-            });
-        }
+        // Link actors to the movie
+        await linkActorsToMovie(movieId, existingActorIds);
+        console.log(`Associating the following actors with Movie ID ${movieId}: ${existingActorIds.join(', ')}`);
 
         // Callback to confirm successful creation
         callback(null, 'Movie and related entities created successfully');
