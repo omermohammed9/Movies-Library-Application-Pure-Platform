@@ -5,7 +5,8 @@ const directorRoute = require('./routes/directorRoute');
 const actorRoute = require('./routes/actorRoute');
 const cors = require('cors');
 
-app.use(express.json())
+app.use(express.json());
+// app.use(express.static('movieDetails'));
 app.use(cors());
 
 

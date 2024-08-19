@@ -31,14 +31,22 @@ $(document).ready(function () {
                         confirmDelete(movieId);
                     });
 
-                    $('.edit-button').on('click', function () {
+                    $('.edit-button').on('click', function (e) {
+                        e.stopPropagation()
+                        e.preventDefault();
                         const movieId = $(this).data('id');
-                        loadMovieDetailsForEdit(movieId);
+                        console.log("Movie ID being edited: ", movieId);
+                        loadMovieDetailsForEdit(movieId)
                     });
                     $('.movie-card').on('click', function () {
                         const movieId = $(this).data('id');
-                        window.location.href = `./frontend/movie-details.html?id=${movieId}`;
-                        //loadMovieDetails(movieId);
+                        console.log("Movie ID clicked: ", movieId);
+                        if (movieId) {
+                            window.location.href = `./frontend/movie-details.html?id=${movieId}`;
+                        } else {
+                            console.error('Movie ID is missing');
+                        }
+                        // loadMovieDetails(movieId);
                     })
                 }
             })
@@ -82,9 +90,9 @@ $(document).ready(function () {
             description: formData.get('description'),
             release_year: formData.get('release_year'),
             genre: formData.get('genre'),
-            director_id: formData.get('director_id'),
+            // director_id: formData.get('director_id'),
             image_url: formData.get('image_url'),
-            actors: formData.get('actors').split(',').map(Number)
+            // actors: formData.get('actors').split(',').map(Number)
         };
 
         editMovie(movieId, updatedMovieData)
@@ -110,20 +118,32 @@ $(document).ready(function () {
 
     // Load movie details for editing
     const loadMovieDetailsForEdit = (movieId) => {
-        fetchMovieWithActors(movieId)
+        console.log(`Fetching details for Movie ID: ${movieId}`);
+        fetch(`http://localhost:1010/movies/${movieId}`)
             .then(response => {
-                const movie = response;  // Assuming the movie data is in the first index
+                console.log('Response received:', response);
+                if (!response.ok) {
+                    console.error('Error fetching movie details. Status:', response.status);
+                    throw new Error('Error fetching movie details');
+                }
+                return response.json();
+            })
+            .then(response => {
+                const movie = response.data;  // Assuming the movie data is in the first index
                 $('#edit-title').val(movie.title);
                 $('#edit-description').val(movie.description);
                 $('#edit-release_year').val(movie.release_year);
                 $('#edit-genre').val(movie.genre);
-                $('#edit-director_id').val(movie.director_id);
                 $('#edit-image_url').val(movie.image_url);
-                $('#edit-actors').val(movie.actors.join(','));  // Assuming actors is an array
+                // $('#edit-actors-names').val(movie.actors.map(actor => actor.name).join(','));
+                // $('#edit-actors-ages').val(movie.actors.map(actor => actor.age).join(','));
+                // $('#edit-actors-countries').val(movie.actors.map(actor => actor.country_of_origin).join(','));
                 $('#edit-movie-id').val(movieId);  // Set hidden movie ID for update
                 $editMovieModal.show();  // Show the edit modal
+
             })
             .catch(error => {
+                console.error('Error caught during movie details fetch:', error);
                 Swal.fire({
                     title: 'Error!',
                     text: 'Failed to load movie details.',

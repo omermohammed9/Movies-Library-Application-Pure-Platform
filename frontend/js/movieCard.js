@@ -1,7 +1,7 @@
 const createMovieCard = (movie) => {
     return `
         <div class="col-md-4">
-            <div class="movie-card position-relative">
+            <div class="movie-card position-relative" data-id="${movie.id}">
                 <img src="${movie.image_url}" alt="${movie.title}">
                 <div class="card-body">
                     <h5 class="card-title">${movie.title}</h5>

@@ -1,4 +1,5 @@
 // Helper function to insert a movie
+const db = require('../config/db');
 const insertMovie = async (movieData) => {
     const { title, description, release_year, genre, director_id, image_url } = movieData;
 
@@ -15,4 +16,4 @@ const insertMovie = async (movieData) => {
     });
 };
 
-module.exports = insertMovie;
+module.exports = { insertMovie };

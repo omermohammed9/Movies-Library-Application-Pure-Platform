@@ -1,4 +1,5 @@
 // Helper function to insert a new actor
+const db = require('../config/db');
 const insertActor = async (actor_name) => {
     return new Promise((resolve, reject) => {
         db.run(`INSERT INTO Actors (name) VALUES (?)`, [actor_name], function (err) {

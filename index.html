@@ -151,24 +151,23 @@
                     </div>
                     <div class="mb-3">
                         <label for="edit-release_year" class="form-label">Release Year</label>
-                        <input type="number" class="form-control" id="edit-release_year" name="release_year" required>
+                        <select class="form-control" id="edit-release_year" name="release_year" required>
+                            <option value="">Select a year</option>
+                        </select>
+                        <small id="releaseYearUpdate" class="form-text text-muted">Select a year between 1900 and the current year.</small>
                     </div>
                     <div class="mb-3">
                         <label for="edit-genre" class="form-label">Genre</label>
                         <input type="text" class="form-control" id="edit-genre" name="genre" required>
                     </div>
                     <div class="mb-3">
-                        <label for="edit-director_id" class="form-label">Director ID</label>
-                        <input type="number" class="form-control" id="edit-director_id" name="director_id" required>
-                    </div>
-                    <div class="mb-3">
                         <label for="edit-image_url" class="form-label">Image URL</label>
                         <input type="url" class="form-control" id="edit-image_url" name="image_url" required>
                     </div>
-                    <div class="mb-3">
-                        <label for="edit-actors" class="form-label">Actors (comma-separated IDs)</label>
-                        <input type="text" class="form-control" id="edit-actors" name="actors" required>
-                    </div>
+<!--                    <div class="mb-3">-->
+<!--                        <label for="edit-actors" class="form-label">Actors (comma-separated IDs)</label>-->
+<!--                        <input type="text" class="form-control" id="edit-actors" name="actors" required>-->
+<!--                    </div>-->
                     <input type="hidden" id="edit-movie-id">
                     <button type="submit" class="btn btn-success">Save Changes</button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -183,5 +182,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
 <script type="module" src="frontend/js/app.js"></script>
 <script src="frontend/js/populateYears.js"></script>
+<script src="frontend/js/movie-details.js"></script>
 </body>
 </html>

@@ -1,4 +1,5 @@
 // Helper function to link actors to a movie
+const db = require('../config/db');
 const linkActorsToMovie = async (movieId, actorIds) => {
     if (actorIds && actorIds.length > 0) {
         const placeholders = actorIds.map(() => '(?, ?)').join(', ');
@@ -21,4 +22,4 @@ const linkActorsToMovie = async (movieId, actorIds) => {
     }
 };
 
-module.exports = linkActorsToMovie
+module.exports = {linkActorsToMovie}

@@ -42,7 +42,6 @@ const collectDirectorData = (formData) => {
 // Utility function to collect actors data from the form
 const collectActorsData = (formData) => {
     console.log("Actors from form:", formData.get('actors'));
-
     const actorNames = formData.get('actors')
         ? formData.get('actors').split(',').map(name => name.trim()).filter(Boolean)  // Ensure valid names
         : [];

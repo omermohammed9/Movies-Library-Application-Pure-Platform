@@ -8,24 +8,42 @@
     <!-- Bootstrap CSS -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css" rel="stylesheet">
 
+    <!-- Animate.css -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="../frontend/CSS/styles.css">
+    <link rel="stylesheet" href="CSS/moviecss.css">
 </head>
 <body>
 <div class="container mt-5">
-    <div id="movie-details">
-        <h1 id="movie-title"></h1>
-        <img id="movie-image" class="img-fluid" alt="Movie Poster">
-        <p><strong>Release Year:</strong> <span id="movie-release-year"></span></p>
-        <p><strong>Genre:</strong> <span id="movie-genre"></span></p>
-        <p><strong>Description:</strong></p>
-        <p id="movie-description"></p>
+    <div id="movie-details" class="p-4 bg-dark text-light animate__animated animate__fadeInUp rounded shadow-lg">
+        <!-- Movie Header -->
+        <div class="movie-header d-flex justify-content-between align-items-center">
+            <h1 id="movie-title" class="animate__animated animate__fadeInLeft text-warning"></h1>
+            <div class="badge bg-info text-dark animate__animated animate__fadeInRight" id="movie-genre"></div>
+        </div>
 
-        <h3>Director</h3>
-        <p id="movie-director"></p>
+        <!-- Movie Image -->
+        <div class="text-center my-4">
+            <img id="movie-image" class="img-fluid rounded animate__animated animate__zoomIn" src="https://via.placeholder.com/400x600"
+                 alt="Movie Poster">
+        </div>
 
-        <h3>Actors</h3>
-        <ul id="movie-actors"></ul>
+        <!-- Movie Meta Information -->
+        <div class="movie-meta">
+            <p><strong>Release Year:</strong> <span id="movie-release-year"></span></p>
+            <p><strong>Description:</strong></p>
+            <p id="movie-description"></p>
+        </div>
+
+        <!-- Director Information -->
+        <h3 class="mt-4 text-info">Director</h3>
+        <p id="movie-director" class="animate__animated animate__fadeIn bg-secondary p-2 rounded"></p>
+
+        <!-- Actors Information -->
+        <h3 class="mt-4 text-info">Actors</h3>
+        <ul id="movie-actors" class="list-unstyled movie-actors animate__animated animate__fadeIn">
+        </ul>
     </div>
 </div>
 
@@ -35,7 +53,10 @@
 <!-- Bootstrap JS -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
 
+<!-- SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <!-- Movie Details Script -->
-<script src="../frontend/js/movie-details.js"></script>
+<script src="js/movie-details.js"></script>
 </body>
 </html>

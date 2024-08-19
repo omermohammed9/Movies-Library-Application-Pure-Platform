@@ -17,7 +17,8 @@ exports.getAllMovies = (req, res) => {
 exports.createMovie = (req, res) => {
     console.log("Request body:", req.body);
     const { title, description, release_year, genre, director_name, image_url, actors } = req.body;
-    console.log("Actors from request body Server:", actors);
+    console.log(' Director from request body Server:', req.body.director_name);
+    console.log("Actors from request body Server:", req.body.actors);
 
     // Validate actors array
     if (!Array.isArray(actors) || actors.length === 0) {
@@ -53,11 +54,17 @@ exports.getMovieById = (req, res) => {
 
 exports.updateMovie = (req, res) => {
     const id = req.params.id;
-    const { title, description, release_year, genre, director_id, image_url } = req.body;
-    movieModel.updateMovie(id, { title, description, release_year, genre, director_id, image_url }, (err, result) => {
+    console.log('Fetching movie details with id:', id);
+    const { title, description, release_year, genre, image_url } = req.body;
+    movieModel.updateMovie(id, { title, description, release_year, genre, image_url }, (err, result) => {
         if (err) {
+            console.error(`Error fetching movie: ${err.message}`);  // Log errors
             res.status(500).json({ error: err.message });
             return;
+        }
+        if (!id) {
+            console.log('Movie not found');  // Log if no movie found
+            return res.status(404).json({ error: 'Movie not found' });
         }
         res.json({
             message: "Movie updated successfully",

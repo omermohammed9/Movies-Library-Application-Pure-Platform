@@ -23,4 +23,4 @@ const processActors = async (actors) => {
     return existingActorIds;
 };
 
-module.exports = processActors;
+module.exports = {processActors};

@@ -2,8 +2,8 @@
 
 const db = require('../config/db');
 const {insertMovie} = require("../helpers/insertmovie.js");
-const {processActors} = require("../helpers/processactors.js");
-const {linkActorsToMovie} = require("../helpers/linkactors.js");
+const {processActors} = require("../helpers/processactors");
+const {linkActorsToMovie} = require("../helpers/linkactors");
 const getOrCreateDirector = require("../helpers/getOrCreateDirector");
 
 
@@ -50,6 +50,7 @@ const createMovie = async (movieData, callback) => {
         let director = await getOrCreateDirector(director_name);
         console.log("Director ID:", director.id);
 
+        console.log("Inserting movie...", insertMovie);
         // Insert the movie and get the movie ID
         const movieId = await insertMovie({ title, description, release_year, genre, director_id: director.id, image_url });
         console.log("Movie ID:", movieId);
@@ -74,12 +75,12 @@ const createMovie = async (movieData, callback) => {
 
 // Function to update an existing movie
 const updateMovie = (id, movieData, callback) => {
-    const { title, description, release_year, genre, director_id, image_url } = movieData;
+    const { title, description, release_year, genre, image_url } = movieData;
     const sql = `UPDATE Movies 
-                 SET title = ?, description = ?, release_year = ?, genre = ?, director_id = ?, image_url = ? 
+                 SET title = ?, description = ?, release_year = ?, genre = ?, image_url = ?
                  WHERE id = ?`;
 
-    db.run(sql, [title, description, release_year, genre, director_id, image_url, id], function (err) {
+    db.run(sql, [title, description, release_year, genre, image_url, id], function (err) {
         callback(err, this.changes);
     });
 };
