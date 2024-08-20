@@ -10,7 +10,7 @@ const collectMovieData = (formData) => {
     console.log(formData.get('title'));
     console.log(formData.get('description'));
     console.log(formData.get('release_year'));
-    console.log(formData.get('genre'));
+    console.log(formData.get('add-genre'));
     console.log(formData.get('image_url'));
     console.log(formData.get('director_name'));
     console.log(formData.get('actors'));
@@ -19,7 +19,7 @@ const collectMovieData = (formData) => {
         title: formData.get('title'),
         description: formData.get('description'),
         release_year: formData.get('release_year'),
-        genre: formData.get('genre'),
+        genre: formData.get('add-genre'),
         image_url: formData.get('image_url'),
         director_name: formData.get('director_name'),
         actors: formData.get('actors').split(',').map(name => name.trim()).filter(Boolean),
@@ -41,17 +41,23 @@ const collectDirectorData = (formData) => {
 
 // Utility function to collect actors data from the form
 const collectActorsData = (formData) => {
-    console.log("Actors from form:", formData.get('actors'));
+    const actorsString = formData.get('actors');
+    console.log("Actors from form:", actorsString);  // Log actors input
+
     const actorNames = formData.get('actors')
         ? formData.get('actors').split(',').map(name => name.trim()).filter(Boolean)  // Ensure valid names
         : [];
     console.log("Filtered actor names:", actorNames);
-    const actorAges = formData.get('actor_ages')
-        ? formData.get('actor_ages').split(',').map(age => age.trim())
-        : [];
-    const actorCountries = formData.get('actor_countries')
-        ? formData.get('actor_countries').split(',').map(country => country.trim())
-        : [];
+
+    const actorAgesString = formData.get('actor_ages');
+    console.log("Actor Ages from form:", actorAgesString);
+    const actorAges = actorAgesString ? actorAgesString.split(',').map(age => age.trim()) : [];
+
+    const actorCountriesString = formData.get('actor_countries');
+    console.log("Actor Countries from form:", actorCountriesString);
+    const actorCountries = actorCountriesString ? actorCountriesString.split(',').map(country => country.trim()) : [];
+
+    console.log("Actor Data - Names:", actorNames, "Ages:", actorAges, "Countries:", actorCountries);
 
     // Ensure all arrays have the same length
     if (actorNames.length !== actorAges.length || actorNames.length !== actorCountries.length) {

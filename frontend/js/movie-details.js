@@ -1,85 +1,144 @@
 $(document).ready(function () {
-    const urlParams = new URLSearchParams(window.location.search);
-    const movieId = urlParams.get('id');
+    const movieId = getMovieIdFromURL();
 
-    console.log("Movie ID from URL:", movieId); // Log the movie ID from URL
+    if (isOnMovieDetailsPage()) {
+        initMovieDetails(movieId);
+    }
 
-    if (movieId) {
-        console.log("Fetching details for Movie ID:", movieId);
+    // Initialize movie details if on the correct page
+    function initMovieDetails(movieId) {
+        if (!movieId) {
+            showAlert("No movie selected. Please go back and choose a movie.");
+            return;
+        }
+
         fetchMovieDetails(movieId);
-    } else {
-        console.error("Movie ID not found in URL.");
-        Swal.fire({
-            title: 'Error!',
-            text: 'Movie ID not found!',
-            icon: 'error',
-            confirmButtonText: 'OK'
+        fetchLikeCount(movieId);
+        fetchComments(movieId);
+        handleLikeButton(movieId);
+        handleCommentSubmit(movieId);
+    }
+
+    // Get movie ID from URL
+    function getMovieIdFromURL() {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get('id');
+    }
+
+    // Check if the current page is the movie-details page
+    function isOnMovieDetailsPage() {
+        return window.location.pathname.includes('movie-details.html');
+    }
+
+    // Display alert message
+    function showAlert(message) {
+        alert(message);
+    }
+
+    // Fetch and display movie details
+    function fetchMovieDetails(movieId) {
+        fetch(`http://localhost:1010/movies/${movieId}`)
+            .then(handleResponse)
+            .then(displayMovieDetails)
+            .catch(showError('Could not load movie details.'));
+    }
+
+    // Display movie details in the DOM
+    function displayMovieDetails(data) {
+        const movie = data.data;
+        if (!movie) return showAlert("No movie data found.");
+
+        $('#movie-title').text(movie.title);
+        $('#movie-image').attr('src', movie.image_url);
+        $('#movie-release-year').text(movie.release_year);
+        $('#movie-genre').text(movie.genre);
+        $('#movie-description').text(movie.description);
+        $('#movie-director').text(movie.director_name || 'Unknown');
+
+        displayActors(movie.actors);
+    }
+
+    // Display actors in the DOM
+    function displayActors(actors) {
+        const actorList = $('#movie-actors');
+        actorList.empty();
+        if (actors && actors.length > 0) {
+            actors.forEach(actor => {
+                actorList.append(`<li>${actor.name} (Age: ${actor.age || 'N/A'}, Country: ${actor.country_of_origin || 'Unknown'})</li>`);
+            });
+        } else {
+            actorList.append('<li>No actors available</li>');
+        }
+    }
+
+    // Fetch and display like count
+    function fetchLikeCount(movieId) {
+        fetch(`http://localhost:1010/likes/movies/${movieId}/likes`)
+            .then(handleResponse)
+            .then(data => $('#like-count').text(data.likeCount || 0))
+            .catch(showError('Error fetching like count.'));
+    }
+
+    // Add like functionality
+    function handleLikeButton(movieId) {
+        $('#like-button').on('click', function () {
+            fetch(`http://localhost:1010/likes/movies/${movieId}/like`, { method: 'POST' })
+                .then(handleResponse)
+                .then(data => $('#like-count').text(data.likeCount))
+                .catch(showError('Failed to add like.'));
         });
     }
 
+    // Fetch and display comments
+    function fetchComments(movieId) {
+        fetch(`http://localhost:1010/comments/movies/${movieId}/comments`)
+            .then(handleResponse)
+            .then(displayComments)
+            .catch(showError('Error fetching comments.'));
+    }
 
-    function fetchMovieDetails(movieId) {
-        console.log("Fetching details for Movie ID:", movieId);
-        fetch(`http://localhost:1010/movies/${movieId}`)
-            .then(response => {
-                if (!response.ok) {
-                    Swal.fire({
-                        title: 'Error!',
-                        text: 'Failed to fetch movie details!',
-                        icon: 'error',
-                        confirmButtonText: 'OK'
-                    });
-                    throw new Error('Error fetching movie details');
-                }
-                return response.json();
+    // Display comments in the DOM
+    function displayComments(comments) {
+        const commentsList = $('#comments-list');
+        commentsList.empty();
+        comments.forEach(comment => {
+            commentsList.append(`<div class="comment-item"><p>${comment.comment}</p><small class="text">at ${new Date(comment.created_at).toLocaleString()}</small></div>`);
+        });
+    }
+
+    // Handle comment submission
+    function handleCommentSubmit(movieId) {
+        $('#add-comment-btn').on('click', function () {
+            const comment = $('#comment-text').val().trim();
+            if (!comment) return showAlert('Please enter a comment.');
+            addComment(movieId, comment);
+        });
+    }
+
+    // Add a comment
+    function addComment(movieId, comment) {
+        fetch(`http://localhost:1010/comments/movies/${movieId}/comments`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ comment }),
         })
-            .then(data => {
-                console.log("API Response:", data); // Log the entire API response
-                if (!data) {
-                    console.error("No data received from API.");
-                    return;
-                }
-
-                const movie = data.data;  // Access `data.data` directly
-                console.log("Movie details:", movie);
-
-                // Director information (as `director_name`)
-                const director_name = movie.director_name;
-                console.log("Director:", director_name);
-
-                // Populate the HTML elements with movie details
-                $('#movie-title').text(movie.title);
-                $('#movie-image').attr('src', movie.image_url);
-                $('#movie-release-year').text(movie.release_year);
-                $('#movie-genre').text(movie.genre);
-                $('#movie-description').text(movie.description);
-                $('#movie-director').text(director_name);  // Use the director name from the response
-
-                // Populate actors (if they exist)
-                const actorList = $('#movie-actors');
-                if (movie.actors && movie.actors.length > 0) {
-                    movie.actors.forEach(actor => {
-                        actorList.append(`<li>${actor.name} (Age: ${actor.age || 'N/A'}, Country: ${actor.country_of_origin || 'Unknown'})</li>`);
-                    });
-                } else {
-                    actorList.append('<li>No actors available</li>');
-                }
-                Swal.fire({
-                    title: 'Success!',
-                    text: 'Movie details loaded successfully!',
-                    icon: 'success',
-                    timer: 1500,
-                    showConfirmButton: false
-                });
+            .then(handleResponse)
+            .then(() => {
+                $('#comment-text').val('');
+                fetchComments(movieId);
             })
-            .catch(error => {
-                console.error('Error fetching movie details:', error);
-                Swal.fire({
-                    title: 'Error!',
-                    text: 'Could not load movie details.',
-                    icon: 'error',
-                    confirmButtonText: 'OK'
-                });
-            });
+            .catch(showError('Error adding comment.'));
+    }
+
+    // Handle response and errors
+    function handleResponse(response) {
+        if (!response.ok) throw new Error('Failed to fetch data');
+        return response.json();
+    }
+
+    function showError(message) {
+        return function (error) {
+            console.error(`${message}:`, error);
+        };
     }
 });

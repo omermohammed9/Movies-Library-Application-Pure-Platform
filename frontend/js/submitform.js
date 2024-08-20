@@ -20,6 +20,7 @@ async function submitForm() {
             console.warn("No actors to create.");
             movieData.actors = [];
         } else {
+            console.log("Actor Data to be created:", actorsData);
             const actorResponses = await Promise.all(actorsData.map(actor => createActor(actor)));
             movieData.actors = actorResponses.map(actor => actor.id);
         }

@@ -52,7 +52,7 @@ const createMovie = async (movieData, callback) => {
 
         console.log("Inserting movie...", insertMovie);
         // Insert the movie and get the movie ID
-        const movieId = await insertMovie({ title, description, release_year, genre, director_id: director.id, image_url });
+        const movieId = await insertMovie({ title, description, release_year, genre, director_id: director.id, image_url, actors });
         console.log("Movie ID:", movieId);
 
         // Handle actors: fetch existing actors and insert new ones

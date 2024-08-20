@@ -86,12 +86,17 @@ $(document).ready(function () {
         const movieId = $('#edit-movie-id').val();
         const formData = new FormData(this);
         const updatedMovieData = {
-            title: formData.get('title'),
-            description: formData.get('description'),
-            release_year: formData.get('release_year'),
-            genre: formData.get('genre'),
+            title: $('#edit-title').val(),
+            description: $('#edit-description').val(),
+            release_year: $('#edit-release_year').val(),
+            genre: $('#edit-genre').val(),
+            image_url: $('#edit-image_url').val(),
+            // title: formData.get('title'),
+            // description: formData.get('description'),
+            // release_year: formData.get('release_year'),
+            // genre: formData.get('genre'),
             // director_id: formData.get('director_id'),
-            image_url: formData.get('image_url'),
+            // image_url: formData.get('image_url'),
             // actors: formData.get('actors').split(',').map(Number)
         };
 

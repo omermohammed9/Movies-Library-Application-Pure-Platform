@@ -67,9 +67,9 @@
                         <small id="releaseYearHelp" class="form-text text-muted">Select a year between 1900 and the current year.</small>
                     </div>
                     <div class="mb-3">
-                        <label for="edit-genre" class="form-label">Genre</label>
+                        <label for="add-genre" class="form-label">Genre (Add)</label>
                         <label>
-                            <select class="form-control"  name="genre" required>
+                            <select class="form-control" id="add-genre" name="add-genre" required>
                                 <option value="">Select a genre</option>
                                 <option value="Action">Action</option>
                                 <option value="Adventure">Adventure</option>
@@ -90,6 +90,7 @@
                             </select>
                         </label>
                     </div>
+
 
                     <!-- Director Information -->
                     <h6>Director Information</h6>
@@ -157,9 +158,30 @@
                         <small id="releaseYearUpdate" class="form-text text-muted">Select a year between 1900 and the current year.</small>
                     </div>
                     <div class="mb-3">
-                        <label for="edit-genre" class="form-label">Genre</label>
-                        <input type="text" class="form-control" id="edit-genre" name="genre" required>
+                        <label for="edit-genre" class="form-label">Genre (Edit)</label>
+                        <label>
+                            <select class="form-control" id="edit-genre" name="edit-genre" required>
+                                <option value="">Select a genre</option>
+                                <option value="Action">Action</option>
+                                <option value="Adventure">Adventure</option>
+                                <option value="Animation">Animation</option>
+                                <option value="Comedy">Comedy</option>
+                                <option value="Crime">Crime</option>
+                                <option value="Documentary">Documentary</option>
+                                <option value="Drama">Drama</option>
+                                <option value="Family">Family</option>
+                                <option value="Fantasy">Fantasy</option>
+                                <option value="Horror">Horror</option>
+                                <option value="Musical">Musical</option>
+                                <option value="Mystery">Mystery</option>
+                                <option value="Romance">Romance</option>
+                                <option value="Sci-Fi">Sci-Fi</option>
+                                <option value="Thriller">Thriller</option>
+                                <option value="Western">Western</option>
+                            </select>
+                        </label>
                     </div>
+
                     <div class="mb-3">
                         <label for="edit-image_url" class="form-label">Image URL</label>
                         <input type="url" class="form-control" id="edit-image_url" name="image_url" required>
@@ -182,6 +204,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
 <script type="module" src="frontend/js/app.js"></script>
 <script src="frontend/js/populateYears.js"></script>
-<script src="frontend/js/movie-details.js"></script>
+<!--<script src="frontend/js/movie-details.js"></script>-->
 </body>
 </html>

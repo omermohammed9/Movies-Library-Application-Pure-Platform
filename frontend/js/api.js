@@ -30,7 +30,8 @@ const fetchMovieWithActors = (movieId) => {
 
 // Function to add a new movie
 const addMovie = (movieData) => {
-    console.log(movieData);
+    console.log('Movie data from API.js :', movieData);
+    console.log('Actors passed through the API', movieData.actors);
     return fetch(`${API_BASE_URL}/movies/add`, {
         method: 'POST',
         headers: {
@@ -102,7 +103,8 @@ const createDirector = (directorData) => {
 
 // Function to create an actor
 const createActor = (actorData) => {
-    console.log("Sending actor data:", actorData);  // Log actor data being sent
+    console.log("Sending actor data:", actorData);
+    // Log actor data being sent
     return fetch(`${API_BASE_URL}/actors/add`, {
         method: 'POST',
         headers: {
@@ -125,6 +127,8 @@ const createActor = (actorData) => {
             throw error;  // Re-throw the error to be handled by the caller
         });
 };
+
+
 
 
 

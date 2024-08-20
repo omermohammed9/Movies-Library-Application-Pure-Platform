@@ -18,7 +18,7 @@ exports.createMovie = (req, res) => {
     console.log("Request body:", req.body);
     const { title, description, release_year, genre, director_name, image_url, actors } = req.body;
     console.log(' Director from request body Server:', req.body.director_name);
-    console.log("Actors from request body Server:", req.body.actors);
+    console.log("Actors from request body Server:", actors);
 
     // Validate actors array
     if (!Array.isArray(actors) || actors.length === 0) {
