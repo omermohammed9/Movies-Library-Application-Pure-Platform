@@ -1,17 +1,26 @@
 const API_BASE_URL = 'http://localhost:1010'; // Base URL for the API
 
 // Function to fetch all movies
-const fetchMovies = () => {
-    return fetch(`${API_BASE_URL}/movies`)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Error fetching movies');
-            }
-            return response.json();
-        })
-        .catch(error => {
-            console.error('Error:', error);
-        });
+const fetchMovies = async () => {
+    try {
+        const response = await fetch('http://localhost:1010/movies'); // Replace with your actual API endpoint
+        const data = await response.json();
+
+        console.log('API Full Response:', data);
+
+        // Extract the movie data based on response structure
+        if (Array.isArray(data)) {
+            return data; // Return the movie array directly
+        } else if (data.movies || data.data) {
+            return data.movies || data.data; // Return movie data based on structure
+        } else {
+            console.error('Error: Movies data not found in expected format');
+            return [];
+        }
+    } catch (error) {
+        console.error('Error fetching movies:', error);
+        return []; // Return empty array on error
+    }
 };
 
 // Function to fetch a movie's details along with its actors

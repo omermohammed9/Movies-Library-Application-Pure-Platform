@@ -1,6 +1,7 @@
-import { fetchMovies, fetchMovieWithActors, deleteMovie, editMovie } from './api.js';
+import { fetchMovies, deleteMovie, editMovie } from './api.js';
 import {createMovieCard} from "./movieCard.js";
 import {submitForm} from "./submitform.js";
+import {populateCarousel} from "./carouselItem.js";
 
 
 $(document).ready(function () {
@@ -10,49 +11,53 @@ $(document).ready(function () {
     const $addMovieForm = $('#add-movie-form');
     const $editMovieForm = $('#edit-movie-form');
 
-    // Fetch and display movies as Bootstrap cards
-    const loadMovies = () => {
+    // Fetch and display movies as Bootstrap cards and populate carousel
+    const loadMovies = async () => {
+        const movies = await fetchMovies(); // Use centralized fetch function
+
         $moviesList.empty(); // Clear existing movies
-        fetchMovies()
-            .then(response => {
-                const movies = response.data;
-                if (!movies || movies.length === 0) {
-                    $moviesList.html('<p>No movies available. Add one!</p>');
-                } else {
-                    movies.forEach(movie => {
-                        const movieCard = createMovieCard(movie);
-                        $moviesList.append(movieCard);
-                    });
 
-                    // Add event listeners for delete and edit buttons
-                    $('.delete-button').on('click', function (e) {
-                        e.stopPropagation()
-                        const movieId = $(this).data('id');
-                        confirmDelete(movieId);
-                    });
-
-                    $('.edit-button').on('click', function (e) {
-                        e.stopPropagation()
-                        e.preventDefault();
-                        const movieId = $(this).data('id');
-                        console.log("Movie ID being edited: ", movieId);
-                        loadMovieDetailsForEdit(movieId)
-                    });
-                    $('.movie-card').on('click', function () {
-                        const movieId = $(this).data('id');
-                        console.log("Movie ID clicked: ", movieId);
-                        if (movieId) {
-                            window.location.href = `./frontend/movie-details.html?id=${movieId}`;
-                        } else {
-                            console.error('Movie ID is missing');
-                        }
-                        // loadMovieDetails(movieId);
-                    })
-                }
-            })
-            .catch(error => {
-                $moviesList.html('<p>Error loading movies. Please try again later.</p>');
+        if (!movies || movies.length === 0) {
+            $moviesList.html('<p>No movies available. Add one!</p>');
+        } else {
+            movies.forEach(movie => {
+                const movieCard = createMovieCard(movie);
+                $moviesList.append(movieCard);
             });
+
+            // Populate the carousel using the same movie data
+            populateCarousel(movies);
+
+            attachMovieEventListeners(); // Attach the event listeners to the dynamically loaded movies
+        }
+    };
+
+
+    const attachMovieEventListeners = () => {
+        // Add event listeners for delete and edit buttons
+        $('.delete-button').off('click').on('click', function (e) {
+            e.stopPropagation();
+            const movieId = $(this).data('id');
+            confirmDelete(movieId);
+        });
+
+        $('.edit-button').off('click').on('click', function (e) {
+            e.stopPropagation();
+            e.preventDefault();
+            const movieId = $(this).data('id');
+            console.log("Movie ID being edited: ", movieId);
+            loadMovieDetailsForEdit(movieId);
+        });
+
+        $('.movie-card').off('click').on('click', function () {
+            const movieId = $(this).data('id');
+            console.log("Movie ID clicked: ", movieId);
+            if (movieId) {
+                window.location.href = `./frontend/movie-details.html?id=${movieId}`;
+            } else {
+                console.error('Movie ID is missing');
+            }
+        });
     };
 
     // Handle movie form submission (adding a new movie)

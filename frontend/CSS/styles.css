@@ -1,16 +1,101 @@
 /* Global Styles */
-
-
-/* General body and text styling */
 body {
+    background-color: #1a1a1a;
+    color: #ffffff;
     font-family: 'Arial', sans-serif;
-    background-color: #f7f7f7;
 }
 
 /* Header styling */
 header {
-    background-color: #f8f9fa;
-    border-bottom: 1px solid #e0e0e0;
+    background-color: #343a40;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+h1 {
+    font-weight: bold;
+}
+
+h6 {
+    font-weight: bold;
+    color: #343a40;
+}
+
+/* Add Movie Modal Styling */
+.modal .form-label {
+    font-weight: bold;
+}
+
+.modal .form-control {
+    border-color: #6c757d;
+}
+
+.modal .form-select {
+    border-color: #6c757d;
+}
+
+.modal .form-text {
+    font-weight: bold;
+}
+
+.modal .form-control:focus {
+    border-color: #6c757d;
+    box-shadow: 0 0 0 0.25rem rgba(108, 117, 125, 0.25);
+}
+
+
+/* Explicitly set modal input styles for better contrast */
+.modal .form-label,
+.modal .form-control,
+.modal select,
+.modal textarea {
+    color: #000;  /* Ensure the text color is black */
+    background-color: #fff;  /* White background for inputs */
+}
+
+.modal .form-control::placeholder {
+    color: #6c757d;  /* Placeholder text color */
+}
+
+.modal .form-text {
+    color: #6c757d;  /* Help text for fields */
+}
+
+/* Adjust button styles for better visibility */
+.modal .btn-success {
+    background-color: #28a745;  /* Maintain consistent green color */
+    color: #fff;
+}
+
+.modal .btn-secondary {
+    background-color: #6c757d;
+    color: #fff;
+}
+
+.modal .modal-title {
+    color: #343a40;  /* Ensure the modal title is visible */
+}
+
+/* Fix for the "Select a genre" dropdown */
+.modal select.form-control {
+    color: #000;
+    background-color: #fff;
+}
+
+/* General modal padding and layout adjustments */
+.modal .modal-body {
+    padding: 20px;
+}
+
+.modal .modal-header {
+    padding: 15px;
+}
+
+
+
+/* Featured Movies Styling */
+#featured-movies img {
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
 }
 
 /* Movies grid */
@@ -18,7 +103,7 @@ header {
     margin-top: 20px;
 }
 
-/* Movie Card styling */
+/* Movie Card Styling */
 .movie-card {
     background: #fff;
     border-radius: 15px;
@@ -26,6 +111,11 @@ header {
     margin-bottom: 30px;
     padding: 15px;
     position: relative;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.movie-card:hover {
+    transform: scale(1.05);
 }
 
 .movie-card img {
@@ -40,18 +130,19 @@ header {
     text-align: center;
 }
 
-.movie-card .card-body .card-title {
+.movie-card .card-title {
     margin-top: 10px;
     font-size: 1.1rem;
     font-weight: bold;
 }
 
-.movie-card .card-body .card-text {
+.movie-card .card-text {
     font-size: 0.9rem;
     color: #888;
     margin-bottom: 5px;
 }
 
+/* Movie Stats Styling */
 .movie-card .movie-stats {
     display: flex;
     justify-content: space-around;
@@ -69,6 +160,7 @@ header {
     margin-top: 5px;
 }
 
+/* Play Button Styling */
 .movie-card .play-button {
     background-color: #ff3d00;
     border-radius: 50%;
@@ -87,17 +179,16 @@ header {
 /* Add hover effect for clickable image and title */
 .movie-card a {
     text-decoration: none;
-    color: inherit; /* Maintain text color */
+    color: inherit;
 }
 
 .movie-card img:hover,
 .movie-card .card-title:hover {
-    opacity: 0.8; /* Visually indicate the element is clickable */
+    opacity: 0.8;
     cursor: pointer;
 }
 
-
-/* Delete Button */
+/* Delete Button Styling */
 .movie-card .delete-button {
     position: absolute;
     top: 10px;
@@ -113,147 +204,56 @@ header {
     background-color: #c82333;
 }
 
+/* Card Container Styling */
+#movies-container .card {
+    background-color: #212529;
+    color: #f8f9fa;
+    border: none;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
 
+#movies-container .card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.5);
+}
 
+.card-title {
+    font-size: 1.25rem;
+    color: #f8c471;
+}
 
+.card-img-top {
+    border-radius: 8px;
+    object-fit: cover;
+}
 
+.card-text {
+    font-size: 1rem;
+    color: #e0e0e0;
+}
 
-/*body {*/
-/*    font-family: 'Roboto', sans-serif;*/
-/*    background-color: #f4f6f9;*/
-/*}*/
+/* Button Styling */
+.btn-primary {
+    background-color: #ff5733;
+    border-color: #ff5733;
+}
 
-/*header {*/
-/*    background-color: #ffffff;*/
-/*    border-bottom: 1px solid #dee2e6;*/
-/*}*/
+.btn-primary:hover {
+    background-color: #c70039;
+    border-color: #c70039;
+}
 
-/*h1 {*/
-/*    font-weight: 700;*/
-/*    color: #007bff;*/
-/*}*/
+/* Carousel Styling */
+.carousel-caption {
+    background-color: rgba(0, 0, 0, 0.6); /* Keep the semi-transparent background */
+    padding: 5px 15px; /* Reduce padding for a smaller caption */
+    max-width: 80%; /* Limit the width of the caption */
+    font-size: 0.9rem; /* Reduce the font size */
+    bottom: 10px; /* Adjust the bottom position */
+}
 
-/*#movies-list ul {*/
-/*    padding: 0;*/
-/*}*/
-
-/*#movies-container li {*/
-/*    cursor: pointer;*/
-/*}*/
-
-/*#add-movie-modal input,*/
-/*#add-movie-modal textarea {*/
-/*    margin-bottom: 15px;*/
-/*}*/
-
-/*button {*/
-/*    cursor: pointer;*/
-/*}*/
-
-/*!* Movie Details Section *!*/
-/*#movie-info {*/
-/*    background-color: #f8f9fa;*/
-/*    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);*/
-/*    padding: 15px;*/
-/*    border-radius: 5px;*/
-/*}*/
-
-/*#actors-list li {*/
-/*    background-color: #ffffff;*/
-/*}*/
-
-/*.list-group-item {*/
-/*    transition: background-color 0.3s ease;*/
-/*}*/
-
-/*.list-group-item:hover {*/
-/*    background-color: #e9ecef;*/
-/*}*/
-
-
-
-/*body {*/
-/*    font-family: 'Roboto', sans-serif;*/
-/*}*/
-
-/*header {*/
-/*    display: flex;*/
-/*    justify-content: space-between;*/
-/*    align-items: center;*/
-/*    padding: 20px;*/
-/*    background-color: #f4f4f4;*/
-/*}*/
-
-/*h1 {*/
-/*    font-size: 2.5rem;*/
-/*    color: #007bff;*/
-/*}*/
-
-/*h2 {*/
-/*    font-size: 1.75rem;*/
-/*    margin-bottom: 20px;*/
-/*}*/
-
-/*.list-group-item {*/
-/*    font-size: 1.2rem;*/
-/*}*/
-
-/*#movie-info p {*/
-/*    font-size: 1.1rem;*/
-/*}*/
-
-
-/*.modal-content {*/
-/*    background-color: #f8f9fa;*/
-/*    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);*/
-/*}*/
-
-/*button.btn-success {*/
-/*    background-color: #28a745;*/
-/*}*/
-
-/*button.btn-primary {*/
-/*    background-color: #007bff;*/
-/*}*/
-
-/*header {*/
-/*    background-color: #f8f9fa;*/
-/*    border-bottom: 1px solid #dee2e6;*/
-/*}*/
-
-/*#movies-container li {*/
-/*    cursor: pointer;*/
-/*}*/
-
-/*!*section {*!*/
-/*!*    margin: 20px;*!*/
-/*!*}*!*/
-
-/*#movies-list, #movie-details {*/
-/*    display: flex;*/
-/*    flex-direction: column;*/
-/*    gap: 10px;*/
-/*}*/
-
-/*button {*/
-/*    padding: 10px;*/
-/*    cursor: pointer;*/
-/*}*/
-
-/*#add-movie-modal {*/
-/*    position: fixed;*/
-/*    top: 50%;*/
-/*    left: 50%;*/
-/*    transform: translate(-50%, -50%);*/
-/*    background-color: white;*/
-/*    padding: 20px;*/
-/*    border: 1px solid #ddd;*/
-/*    box-shadow: 0 0 10px rgba(0,0,0,0.1);*/
-/*}*/
-
-/*#add-movie-modal input, #add-movie-modal textarea {*/
-/*    display: block;*/
-/*    width: 100%;*/
-/*    margin-bottom: 10px;*/
-/*    padding: 10px;*/
-/*}*/
+.carousel-item img {
+    height: 400px; /* Control the height of the image */
+    object-fit: contain; /* Display the entire image */
+    width: 100%;
+}
