@@ -1,3 +1,5 @@
+import {fetchMovieWithActors} from "./api.js";
+
 $(document).ready(function () {
     const movieId = getMovieIdFromURL();
 
@@ -59,18 +61,29 @@ $(document).ready(function () {
     }
 
     // Display actors in the DOM
-    function displayActors(actors) {
-        const actorList = $('#movie-actors');
-        actorList.empty();
-        if (actors && actors.length > 0) {
-            actors.forEach(actor => {
-                actorList.append(`<li>${actor.name} (Age: ${actor.age || 'N/A'}, Country: ${actor.country_of_origin || 'Unknown'})</li>`);
-            });
-        } else {
-            actorList.append('<li>No actors available</li>');
+    async function displayActors(movieId) {
+        movieId = movieId || getMovieIdFromURL();
+        try {
+            // Assuming you have a function `getActorsByMovieId` to fetch actors based on movieId
+            const movieData  = await fetchMovieWithActors(movieId);
+            const actorList = $('#movie-actors'); // Assuming #movie-actors is the element where you want to display actors
+            actorList.empty();
+
+            // Access the actors from the nested movie data
+            const actors = movieData.movie.actors;
+
+            if (actors && actors.length > 0) {
+                actors.forEach(actor => {
+                    actorList.append(`<li>${actor.name} (Age: ${actor.age || 'N/A'}, Country: ${actor.country_of_origin || 'Unknown'})</li>`);
+                });
+            } else {
+                actorList.append('<li>No actors available</li>');
+            }
+        } catch (error) {
+            console.error('Error fetching actors:', error);
+            $('#movie-actors').html('<li>Error fetching actors.</li>');
         }
     }
-
     // Fetch and display like count
     function fetchLikeCount(movieId) {
         fetch(`http://localhost:1010/likes/movies/${movieId}/likes`)

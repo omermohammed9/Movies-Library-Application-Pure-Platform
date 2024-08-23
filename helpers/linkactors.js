@@ -1,6 +1,11 @@
 // Helper function to link actors to a movie
 const db = require('../config/db');
 const linkActorsToMovie = async (movieId, actorIds) => {
+    console.log(`Linking actors: ${actorIds} to movie: ${movieId}`);
+    if (!actorIds || actorIds.length === 0) {
+        console.error('No actors to link.');
+        return;  // Handle case where no actors are provided
+    }
     if (actorIds && actorIds.length > 0) {
         const placeholders = actorIds.map(() => '(?, ?)').join(', ');
         const actorSql = `INSERT INTO Movie_Actors (movie_id, actor_id) VALUES ${placeholders}`;

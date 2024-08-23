@@ -9,6 +9,13 @@ db.serialize(() => {
             } else {
                 console.log('Table successfully created or already exists.');
             }
+            db.run('PRAGMA foreign_keys = ON', (err) => {
+                if (err) {
+                    console.error('Error enabling foreign keys:', err.message);
+                } else {
+                    console.log('Foreign keys enabled.');
+                }
+            });
         });
     };
 
@@ -22,7 +29,7 @@ db.serialize(() => {
             genre NVARCHAR(255) NOT NULL,
             director_id INTEGER,
             image_url NVARCHAR(255) NOT NULL,
-            FOREIGN KEY (director_id) REFERENCES Directors(id)
+            FOREIGN KEY (director_id) REFERENCES Directors(id) ON DELETE CASCADE
             )
     `);
 
@@ -52,7 +59,7 @@ db.serialize(() => {
             movie_id INTEGER,
             actor_id INTEGER,
             PRIMARY KEY (movie_id, actor_id),
-            FOREIGN KEY (movie_id) REFERENCES Movies(id),
+            FOREIGN KEY (movie_id) REFERENCES Movies(id) ON DELETE CASCADE,
             FOREIGN KEY (actor_id) REFERENCES Actors(id)
         )
     `);
@@ -62,7 +69,7 @@ db.serialize(() => {
             CREATE TABLE IF NOT EXISTS Likes (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             movie_id INTEGER,
-            FOREIGN KEY (movie_id) REFERENCES Movies(id)
+            FOREIGN KEY (movie_id) REFERENCES Movies(id) ON DELETE CASCADE
         )
     `);
 
@@ -73,7 +80,7 @@ db.serialize(() => {
         movie_id INTEGER,
         comment NVARCHAR(255) NOT NULL,
         created_at INTEGER NOT NULL,
-        FOREIGN KEY (movie_id) REFERENCES Movies(id)
+        FOREIGN KEY (movie_id) REFERENCES Movies(id) ON DELETE CASCADE
             )
     `);
 });

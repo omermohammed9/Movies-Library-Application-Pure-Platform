@@ -5,9 +5,12 @@ async function submitForm() {
     try {
         console.log(this);
         const formData = new FormData(this);
+
         const movieData = collectMovieData(formData);
+
         const directorData = collectDirectorData(formData);
         console.log(directorData);
+
         const actorsData = collectActorsData(formData);
         console.log(actorsData);
 
@@ -22,13 +25,14 @@ async function submitForm() {
         } else {
             console.log("Actor Data to be created:", actorsData);
             const actorResponses = await Promise.all(actorsData.map(actor => createActor(actor)));
-            movieData.actors = actorResponses.map(actor => actor.id);
+            console.log('Actors Responses from Submit Form:', actorResponses);
+            // Use the `name` and `id` from the actor responses to pass to the movie data
+            movieData.actors = actorResponses.map(actor => ({
+                name: actor.name,
+                id: actor.id
+            }));
         }
 
-
-
-        // const actorResponses = await Promise.all(actorsData.map(actor => createActor(actor)));
-        // movieData.actors = actorResponses.map(actor => actor.id);
 
         // Finally, add the movie
         await addMovie(movieData);

@@ -32,13 +32,20 @@ const fetchMovieWithActors = (movieId) => {
             }
             return response.json();
         })
+        .then(data => {
+            console.log('Movie data from API.js :', data);
+            return data;
+        })
         .catch(error => {
             console.error('Error:', error);
         });
 };
 
+
 // Function to add a new movie
 const addMovie = (movieData) => {
+
+    movieData.actors = movieData.actors.map(actor => actor.name);
     console.log('Movie data from API.js :', movieData);
     console.log('Actors passed through the API', movieData.actors);
     return fetch(`${API_BASE_URL}/movies/add`, {
@@ -129,17 +136,16 @@ const createActor = (actorData) => {
         })
         .then(result => {
             console.log("Actor created:", result);  // Log the created actor
-            return result;
+            return {
+                name: actorData.name, // Or whatever key represents the actor's name
+                id: result.result     // Assuming 'result' contains the actor ID
+            };
         })
         .catch(error => {
             console.error("Error in createActor:", error);
             throw error;  // Re-throw the error to be handled by the caller
         });
 };
-
-
-
-
 
 // Export the API functions so they can be used in other files
 export { fetchMovies, fetchMovieWithActors, addMovie, deleteMovie, editMovie, createActor, createDirector };

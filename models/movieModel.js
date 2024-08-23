@@ -159,44 +159,6 @@ const getMovieWithActors = (movie_id, callback) => {
     });
 };
 
-// const getMovieWithActors = (movie_id, callback) => {
-//     const sql = `
-//         SELECT Actors.name, Actors.age, Actors.country_of_origin
-//         FROM Actors
-//         JOIN Movie_Actors ON Movie_Actors.actor_id = Actors.id
-//         WHERE Movie_Actors.movie_id = ?;
-//     `;
-//
-//     db.all(sql, [movie_id], (err, actors) => {
-//         if (err) {
-//             return callback(err, null);
-//         }
-//
-//         callback(null, actors);  // Return the list of actors
-//     });
-// };
-
-
-
-
-// const getMovieWithActors = (movie_id, callback) => {
-//     const sql = `
-//          SELECT Movies.title, Actors.name
-//         FROM Movies
-//         JOIN Movie_Actors ON Movies.id = Movie_Actors.movie_id
-//         JOIN Actors ON Movie_Actors.actor_id = Actors.id
-//         WHERE Movies.id = ?
-//     `;
-//
-//     db.all(sql, [movie_id], (err, rows) => {
-//         if (err) {
-//             callback(err, null);
-//         } else {
-//             callback(null, rows);
-//         }
-//     });
-// };
-
 
 // Export the functions to be used in the controller
 module.exports = {

@@ -18,7 +18,12 @@ exports.createMovie = (req, res) => {
     console.log("Request body:", req.body);
     const { title, description, release_year, genre, director_name, image_url, actors } = req.body;
     console.log(' Director from request body Server:', req.body.director_name);
-    console.log("Actors from request body Server:", actors);
+    console.log("Actors from request body Server:", req.body.actors);
+
+    if (!actors || actors.length === 0) {
+        throw new Error("No actors provided");  // Handle missing actors
+    }
+
 
     // Validate actors array
     if (!Array.isArray(actors) || actors.length === 0) {
@@ -131,15 +136,3 @@ exports.getMovieWithActors = (req, res) => {
         return res.status(200).json({ message: "Success", movie });
     });
 };
-
-// exports.getMovieWithActors = (req, res) => {
-//     const { id } = req.params;
-//
-//     movieModel.getMovieWithActors(id, (err, actors) => {
-//         if (err) {
-//             res.status(500).json({ error: err.message });
-//         } else {
-//             res.status(200).json({ message: "Success", data: actors });
-//         }
-//     });
-// };
