@@ -72,6 +72,7 @@ $(document).ready(function () {
                     confirmButtonText: 'OK'
                 });
                 $addMovieModal.hide();  // Close modal
+                this.reset();
                 loadMovies();  // Reload the movies
             })
             .catch(() => {

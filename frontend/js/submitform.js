@@ -18,7 +18,7 @@ async function submitForm() {
         const director = await createDirector(directorData);
         movieData.director_id = director.id;
 
-        // Create actors in parallel and get their IDs
+        // Create actors in parallel and get their IDs & names
         if (!actorsData || actorsData.length === 0) {
             console.warn("No actors to create.");
             movieData.actors = [];
@@ -38,7 +38,7 @@ async function submitForm() {
         await addMovie(movieData);
 
         // Optionally, show a success message or redirect
-        alert('Movie added successfully!');
+        // alert('Movie added successfully!');
 
     } catch (error) {
         // This will catch any errors that occur during the process

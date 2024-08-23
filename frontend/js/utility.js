@@ -1,12 +1,5 @@
 // Utility function to collect movie data from the form
 const collectMovieData = (formData) => {
-    // title: formData.get('title'),
-    // description: formData.get('description'),
-    // release_year: formData.get('release_year'),
-    // genre: formData.get('genre'),
-    // image_url: formData.get('image_url'),
-    // director_name: formData.get('director_name'),
-    // actors: formData.get('actors').split(',').map(name => name.trim()).filter(Boolean),
     console.log(formData.get('title'));
     console.log(formData.get('description'));
     console.log(formData.get('release_year'));
