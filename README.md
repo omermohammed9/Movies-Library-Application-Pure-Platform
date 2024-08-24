@@ -14,6 +14,9 @@ This website allows users to browse, search, add, update, and delete movie detai
 - Backend: Node.js, Express.js, SQLite
 - Libraries: SweetAlert2
 
+![alt text](screenshots/1.png "Optional title")
+
+
 ## Installation
 1. Clone the repository:
    ```bash
