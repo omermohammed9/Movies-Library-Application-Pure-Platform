@@ -57,7 +57,7 @@ $(document).ready(() => {
             const response = await fetch(`http://localhost:1010/movies/${movieId}`);
             if (!response.ok) throw new Error('Failed to fetch movie details');
             const movie = await response.json();
-            populateEditForm(movie);
+            populateEditForm(movie.data);
             $editMovieModal.show();
         } catch (error) {
             console.error('Error fetching movie details:', error);
