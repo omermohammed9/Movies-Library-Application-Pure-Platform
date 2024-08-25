@@ -57,7 +57,7 @@ Here is how users can update movie details.
 
 ### Edit Movie-2
 Here is how users can update movie details.
-![Edit Movie](screenshots/4.png "Edit Movie Interface")
+![Edit Movie](screenshots/5.png "Edit Movie Interface")
 
 ### Delete Movie
 A view of the prompt confirming a movie deletion.
