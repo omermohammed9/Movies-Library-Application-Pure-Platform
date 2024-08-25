@@ -1,203 +1,133 @@
 import { fetchMovies, deleteMovie, editMovie } from './api.js';
-import {createMovieCard} from "./movieCard.js";
-import {submitForm} from "./submitform.js";
-import {populateCarousel} from "./carouselItem.js";
+import { createMovieCard } from "./movieCard.js";
+import { submitForm } from "./submitform.js";
+import { populateCarousel } from "./carouselItem.js";
 
-
-$(document).ready(function () {
+$(document).ready(() => {
     const $moviesList = $('#movies-container');
     const $addMovieModal = new bootstrap.Modal(document.getElementById('add-movie-modal'));
     const $editMovieModal = new bootstrap.Modal(document.getElementById('edit-movie-modal'));
     const $addMovieForm = $('#add-movie-form');
     const $editMovieForm = $('#edit-movie-form');
 
-    // Fetch and display movies as Bootstrap cards and populate carousel
+    const showAlert = (title, text, icon) => {
+        Swal.fire({ title, text, icon, confirmButtonText: 'OK' });
+    };
+
     const loadMovies = async () => {
-        const movies = await fetchMovies(); // Use centralized fetch function
+        try {
+            const movies = await fetchMovies();
+            $moviesList.empty();
 
-        $moviesList.empty(); // Clear existing movies
-
-        if (!movies || movies.length === 0) {
-            $moviesList.html('<p>No movies available. Add one!</p>');
-        } else {
-            movies.forEach(movie => {
-                const movieCard = createMovieCard(movie);
-                $moviesList.append(movieCard);
-            });
-
-            // Populate the carousel using the same movie data
-            populateCarousel(movies);
-
-            attachMovieEventListeners(); // Attach the event listeners to the dynamically loaded movies
+            if (!movies || movies.length === 0) {
+                $moviesList.html('<p>No movies available. Add one!</p>');
+            } else {
+                movies.forEach(movie => $moviesList.append(createMovieCard(movie)));
+                populateCarousel(movies);
+            }
+            attachEventListeners();
+        } catch (error) {
+            console.error('Failed to fetch movies:', error);
+            showAlert('Error!', 'Failed to load movies.', 'error');
         }
     };
 
-
-    const attachMovieEventListeners = () => {
-        // Add event listeners for delete and edit buttons
-        $('.delete-button').off('click').on('click', function (e) {
+    const attachEventListeners = () => {
+        $(document).on('click', '.delete-button', function (e) {
             e.stopPropagation();
-            const movieId = $(this).data('id');
-            confirmDelete(movieId);
+            confirmDelete($(this).data('id'));
         });
 
-        $('.edit-button').off('click').on('click', function (e) {
+        $(document).on('click', '.edit-button', function (e) {
             e.stopPropagation();
             e.preventDefault();
-            const movieId = $(this).data('id');
-            console.log("Movie ID being edited: ", movieId);
-            loadMovieDetailsForEdit(movieId);
+            loadMovieDetailsForEdit($(this).data('id'));
         });
 
-        $('.movie-card').off('click').on('click', function () {
+        $(document).on('click', '.movie-card', function () {
             const movieId = $(this).data('id');
-            console.log("Movie ID clicked: ", movieId);
             if (movieId) {
                 window.location.href = `./frontend/movie-details.html?id=${movieId}`;
-            } else {
-                console.error('Movie ID is missing');
             }
         });
     };
 
-    // Handle movie form submission (adding a new movie)
-    $addMovieForm.on('submit', function (e) {
-        e.preventDefault();
-        submitForm.call(this)
-            .then(() => {
-                Swal.fire({
-                    title: 'Success!',
-                    text: 'Movie added successfully.',
-                    icon: 'success',
-                    confirmButtonText: 'OK'
-                });
-                $addMovieModal.hide();  // Close modal
-                this.reset();
-                loadMovies();  // Reload the movies
-            })
-            .catch(() => {
-                Swal.fire({
-                    title: 'Error!',
-                    text: 'Failed to add movie.',
-                    icon: 'error',
-                    confirmButtonText: 'OK'
-                });
-            });
-    });
-
-
-    // Handle edit movie form submission (updating movie details)
-    $editMovieForm.on('submit', function (e) {
-        e.preventDefault();
-        const movieId = $('#edit-movie-id').val();
-        const formData = new FormData(this);
-        const updatedMovieData = {
-            title: $('#edit-title').val(),
-            description: $('#edit-description').val(),
-            release_year: $('#edit-release_year').val(),
-            genre: $('#edit-genre').val(),
-            image_url: $('#edit-image_url').val(),
-            // title: formData.get('title'),
-            // description: formData.get('description'),
-            // release_year: formData.get('release_year'),
-            // genre: formData.get('genre'),
-            // director_id: formData.get('director_id'),
-            // image_url: formData.get('image_url'),
-            // actors: formData.get('actors').split(',').map(Number)
-        };
-
-        editMovie(movieId, updatedMovieData)
-            .then(() => {
-                Swal.fire({
-                    title: 'Success!',
-                    text: 'Movie updated successfully.',
-                    icon: 'success',
-                    confirmButtonText: 'OK'
-                });
-                $editMovieModal.hide();  // Close modal
-                loadMovies();  // Reload the movies
-            })
-            .catch(() => {
-                Swal.fire({
-                    title: 'Error!',
-                    text: 'Failed to update movie.',
-                    icon: 'error',
-                    confirmButtonText: 'OK'
-                });
-            });
-    });
-
-    // Load movie details for editing
-    const loadMovieDetailsForEdit = (movieId) => {
-        console.log(`Fetching details for Movie ID: ${movieId}`);
-        fetch(`http://localhost:1010/movies/${movieId}`)
-            .then(response => {
-                console.log('Response received:', response);
-                if (!response.ok) {
-                    console.error('Error fetching movie details. Status:', response.status);
-                    throw new Error('Error fetching movie details');
-                }
-                return response.json();
-            })
-            .then(response => {
-                const movie = response.data;  // Assuming the movie data is in the first index
-                $('#edit-title').val(movie.title);
-                $('#edit-description').val(movie.description);
-                $('#edit-release_year').val(movie.release_year);
-                $('#edit-genre').val(movie.genre);
-                $('#edit-image_url').val(movie.image_url);
-                // $('#edit-actors-names').val(movie.actors.map(actor => actor.name).join(','));
-                // $('#edit-actors-ages').val(movie.actors.map(actor => actor.age).join(','));
-                // $('#edit-actors-countries').val(movie.actors.map(actor => actor.country_of_origin).join(','));
-                $('#edit-movie-id').val(movieId);  // Set hidden movie ID for update
-                $editMovieModal.show();  // Show the edit modal
-
-            })
-            .catch(error => {
-                console.error('Error caught during movie details fetch:', error);
-                Swal.fire({
-                    title: 'Error!',
-                    text: 'Failed to load movie details.',
-                    icon: 'error',
-                    confirmButtonText: 'OK'
-                });
-            });
+    const loadMovieDetailsForEdit = async (movieId) => {
+        try {
+            const response = await fetch(`http://localhost:1010/movies/${movieId}`);
+            if (!response.ok) throw new Error('Failed to fetch movie details');
+            const movie = await response.json();
+            populateEditForm(movie);
+            $editMovieModal.show();
+        } catch (error) {
+            console.error('Error fetching movie details:', error);
+            showAlert('Error!', 'Failed to load movie details.', 'error');
+        }
     };
 
-    // Confirm deletion of a movie
-    const confirmDelete = (movieId) => {
-        Swal.fire({
+    const populateEditForm = (movie) => {
+        $('#edit-title').val(movie.title);
+        $('#edit-description').val(movie.description);
+        $('#edit-release_year').val(movie.release_year);
+        $('#edit-genre').val(movie.genre);
+        $('#edit-image_url').val(movie.image_url);
+        $('#edit-movie-id').val(movie.id);
+    };
+
+    const confirmDelete = async (movieId) => {
+        const result = await Swal.fire({
             title: 'Are you sure?',
-            text: 'You won\'t be able to revert this!',
+            text: "You won't be able to revert this!",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#d33',
             cancelButtonColor: '#3085d6',
             confirmButtonText: 'Yes, delete it!'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                deleteMovie(movieId) // Call API to delete movie
-                    .then(() => {
-                        Swal.fire(
-                            'Deleted!',
-                            'Movie has been deleted.',
-                            'success'
-                        );
-                        loadMovies();  // Reload movies
-                    })
-                    .catch(() => {
-                        Swal.fire(
-                            'Error!',
-                            'Movie could not be deleted.',
-                            'error'
-                        );
-                    });
-            }
         });
+
+        if (result.isConfirmed) {
+            try {
+                await deleteMovie(movieId);
+                showAlert('Deleted!', 'Movie has been deleted.', 'success');
+                loadMovies();
+            } catch (error) {
+                showAlert('Error!', 'Movie could not be deleted.', 'error');
+            }
+        }
     };
 
-    // Load all movies on page load
+    $addMovieForm.on('submit', async function (e) {
+        e.preventDefault();
+        try {
+            await submitForm.call(this);
+            showAlert('Success!', 'Movie added successfully.', 'success');
+            $addMovieModal.hide();
+            this.reset();
+            loadMovies();
+        } catch (error) {
+            showAlert('Error!', 'Failed to add movie.', 'error');
+        }
+    });
+
+    $editMovieForm.on('submit', async function (e) {
+        e.preventDefault();
+        try {
+            const movieId = $('#edit-movie-id').val();
+            const formData = {
+                title: $('#edit-title').val(),
+                description: $('#edit-description').val(),
+                release_year: $('#edit-release_year').val(),
+                genre: $('#edit-genre').val(),
+                image_url: $('#edit-image_url').val(),
+            };
+            await editMovie(movieId, formData);
+            showAlert('Success!', 'Movie updated successfully.', 'success');
+            $editMovieModal.hide();
+            loadMovies();
+        } catch (error) {
+            showAlert('Error!', 'Failed to update movie.', 'error');
+        }
+    });
+
     loadMovies();
 });
-
-
