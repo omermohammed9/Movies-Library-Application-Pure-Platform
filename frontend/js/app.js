@@ -109,6 +109,7 @@ $(document).ready(() => {
         }
     });
 
+
     $editMovieForm.on('submit', async function (e) {
         e.preventDefault();
         try {
@@ -132,3 +133,23 @@ $(document).ready(() => {
 
     loadMovies();
 });
+
+$(document).ready(function () {
+    $('#directorInfo').on('show.bs.collapse', function () {
+        // Change the text to 'hide' when the section is opened
+        $(this).prev('.toggle').find('.toggle-icon').text('hide');
+    }).on('hide.bs.collapse', function () {
+        // Change the text to 'show' when the section is closed
+        $(this).prev('.toggle').find('.toggle-icon').text('show');
+    });
+});
+
+$(document).ready(function () {
+    $('#actorsInfo').on('show.bs.collapse', function () {
+        $('.toggle[data-bs-target="#actorsInfo"] .toggle-icon').text('hide');
+    }).on('hide.bs.collapse', function () {
+        $('.toggle[data-bs-target="#actorsInfo"] .toggle-icon').text('show');
+    });
+});
+
+

@@ -29,7 +29,7 @@
     <div class="container d-flex justify-content-between align-items-center">
         <h1 class="h3">Movies Library</h1>
         <button id="add-movie-btn" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#add-movie-modal">
-            <i class="fas fa-plus"></i> Add New Movie
+            <i class="fas fa-plus" aria-hidden="true"></i> Add New Movie
         </button>
     </div>
 </header>
@@ -37,15 +37,13 @@
 
 <!-- Carousel for Featured Movies -->
 <section id="featured-movies" class="container mt-5">
-    <div id="moviesCarousel" class="carousel slide" data-bs-ride="carousel">
-        <div class="carousel-inner">
-            <!-- These will be dynamically populated -->
-        </div>
-        <button class="carousel-control-prev" type="button" data-bs-target="#moviesCarousel" data-bs-slide="prev">
+    <div id="moviesCarousel" class="carousel slide" data-bs-ride="carousel" aria-label="Featured Movies">
+        <div class="carousel-inner"></div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#moviesCarousel" data-bs-slide="prev" aria-label="Previous slide">
             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
             <span class="visually-hidden">Previous</span>
         </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#moviesCarousel" data-bs-slide="next">
+        <button class="carousel-control-next" type="button" data-bs-target="#moviesCarousel" data-bs-slide="next" aria-label="Next slide">
             <span class="carousel-control-next-icon" aria-hidden="true"></span>
             <span class="visually-hidden">Next</span>
         </button>
@@ -73,7 +71,7 @@
                 <form id="add-movie-form">
                     <div class="mb-3">
                         <label for="title" class="form-label">Title</label>
-                        <input type="text" class="form-control" id="title" name="title" maxlength="100" required>
+                        <input type="text" class="form-control" id="title" name="title" aria-describedby="titleHelp" maxlength="100" required>
                         <small id="titleHelp" class="form-text text-muted">Maximum 100 characters allowed.</small>
                     </div>
 
@@ -115,40 +113,50 @@
                     </div>
 
 
-                    <!-- Director Information -->
-                    <h6>Director Information</h6>
-                    <div class="mb-3">
-                        <label for="director_name" class="form-label">Director Name</label>
-                        <input type="text" class="form-control" id="director_name" name="director_name" required>
+                    <!-- Director Information - Collapsible -->
+                    <div class="collapse-section">
+                        <h6 class="toggle" data-bs-toggle="collapse" data-bs-target="#directorInfo" aria-expanded="false" aria-controls="directorInfo">
+                            Director Information <span class="toggle-icon">show</span>
+                        </h6>
+                        <div class="collapse" id="directorInfo">
+                            <div class="mb-3">
+                                <label for="director_name" class="form-label">Director Name</label>
+                                <input type="text" class="form-control" id="director_name" name="director_name" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="director_age" class="form-label">Director Age</label>
+                                <input type="number" class="form-control" id="director_age" name="director_age" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="director_country" class="form-label">Country of Origin</label>
+                                <input type="text" class="form-control" id="director_country" name="director_country" required>
+                            </div>
+                        </div>
                     </div>
-                    <div class="mb-3">
-                        <label for="director_age" class="form-label">Director Age</label>
-                        <input type="number" class="form-control" id="director_age" name="director_age" required>
+                    <!-- Always visible toggle for expanding the Actors Information -->
+                    <h6 class="toggle" data-bs-toggle="collapse" data-bs-target="#actorsInfo" aria-expanded="false" aria-controls="actorsInfo" aria-hidden="true">
+                        Actors Information <span class="toggle-icon">show</span>
+                    </h6>
+
+                    <!-- Collapsible Content for Actors Information -->
+                    <div class="collapse" id="actorsInfo">
+                        <div class="mb-3">
+                            <label for="actors" class="form-label">Actors (comma-separated names)</label>
+                            <input type="text" class="form-control" id="actors" name="actors" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="actor_ages" class="form-label">Actor Ages (comma-separated)</label>
+                            <input type="text" class="form-control" id="actor_ages" name="actor_ages" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="actor_countries" class="form-label">Countries of Origin (comma-separated)</label>
+                            <input type="text" class="form-control" id="actor_countries" name="actor_countries" required>
+                        </div>
                     </div>
-                    <div class="mb-3">
-                        <label for="director_country" class="form-label">Country of Origin</label>
-                        <input type="text" class="form-control" id="director_country" name="director_country" required>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-success">Add Movie</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                     </div>
-                    <div class="mb-3">
-                        <label for="image_url" class="form-label">Image URL</label>
-                        <input type="url" class="form-control" id="image_url" name="image_url" required>
-                    </div>
-                    <!-- Actors Information -->
-                    <h6>Actors Information</h6>
-                    <div class="mb-3">
-                        <label for="actors" class="form-label">Actors (comma-separated names)</label>
-                        <input type="text" class="form-control" id="actors" name="actors" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="actor_ages" class="form-label">Actor Ages (comma-separated)</label>
-                        <input type="text" class="form-control" id="actor_ages" name="actor_ages" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="actor_countries" class="form-label">Countries of Origin (comma-separated)</label>
-                        <input type="text" class="form-control" id="actor_countries" name="actor_countries" required>
-                    </div>
-                    <button type="submit" class="btn btn-success">Add Movie</button>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                 </form>
             </div>
         </div>

@@ -90,6 +90,29 @@ h6 {
     padding: 15px;
 }
 
+.toggle {
+    cursor: pointer;
+    padding: 10px 20px; /* Adjust padding to space out content */
+    background-color: #f8f9fa;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    display: flex;
+    justify-content: space-between; /* This ensures the label and icon are on opposite ends */
+    align-items: center;
+    width: 100%; /* Ensures it spans the full width of its container */
+}
+
+.toggle-icon {
+    margin-left: auto; /* Pushes the icon to the right */
+    display: inline-block; /* Ensures the icon is aligned correctly */
+}
+
+.collapse {
+    padding: 15px;
+    border: 1px solid #ccc;
+    border-top: none; /* Removes top border to seamlessly connect with the toggle */
+    border-radius: 0 0 5px 5px; /* Rounds only the bottom corners */
+}
 
 
 /* Featured Movies Styling */
