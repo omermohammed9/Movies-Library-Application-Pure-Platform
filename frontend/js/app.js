@@ -123,6 +123,7 @@ $(document).ready(() => {
             await editMovie(movieId, formData);
             showAlert('Success!', 'Movie updated successfully.', 'success');
             $editMovieModal.hide();
+            this.reset();
             loadMovies();
         } catch (error) {
             showAlert('Error!', 'Failed to update movie.', 'error');
