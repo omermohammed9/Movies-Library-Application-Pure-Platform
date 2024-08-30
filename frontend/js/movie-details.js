@@ -55,6 +55,7 @@ $(document).ready(function () {
         $('#movie-release-year').text(movie.release_year);
         $('#movie-genre').text(movie.genre);
         $('#movie-description').text(movie.description);
+        $('#movie-trailer').attr('src', `https://www.youtube.com/embed/${movie.youtube_url}`);
         $('#movie-director').text(movie.director_name || 'Unknown');
 
         displayActors(movie.actors);

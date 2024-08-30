@@ -1,4 +1,5 @@
 ﻿const movieModel = require('../models/movieModel');
+const getYouTubeVideoID = require("../helpers/youTubeVideoID");
 
 // Example usage in controller
 exports.getAllMovies = (req, res) => {
@@ -16,6 +17,10 @@ exports.getAllMovies = (req, res) => {
 
 exports.createMovie = (req, res) => {
     console.log("Request body:", req.body);
+    let url = req.body.youtube_url;
+    console.log("YouTube URL:", url);
+    let youtube_url = getYouTubeVideoID(req.body.youtube_url);
+    console.log("Youtube URL after processing:",youtube_url);
     const { title, description, release_year, genre, director_name, image_url, actors } = req.body;
     console.log(' Director from request body Server:', req.body.director_name);
     console.log("Actors from request body Server:", req.body.actors);
@@ -30,7 +35,7 @@ exports.createMovie = (req, res) => {
         return res.status(400).json({ error: "'actors' must be a non-empty array of actor names." });
     }
 
-    movieModel.createMovie({ title, description, release_year, genre, director_name, image_url, actors }, (err, result) => {
+    movieModel.createMovie({ title, description, release_year, genre, director_name, image_url, actors, youtube_url }, (err, result) => {
         if (err) {
             res.status(500).json({ error: err });
             return;
@@ -59,24 +64,36 @@ exports.getMovieById = (req, res) => {
 
 exports.updateMovie = (req, res) => {
     const id = req.params.id;
-    console.log('Fetching movie details with id:', id);
-    const { title, description, release_year, genre, image_url } = req.body;
-    movieModel.updateMovie(id, { title, description, release_year, genre, image_url }, (err, result) => {
-        if (err) {
-            console.error(`Error fetching movie: ${err.message}`);  // Log errors
-            res.status(500).json({ error: err.message });
-            return;
-        }
-        if (!id) {
-            console.log('Movie not found');  // Log if no movie found
-            return res.status(404).json({ error: 'Movie not found' });
-        }
-        res.json({
-            message: "Movie updated successfully",
-            data: result
+
+    // Check if the youtube_url is provided in the request
+    let youtube_url = req.body.youtube_url ? getYouTubeVideoID(req.body.youtube_url) : null;
+
+    if (!youtube_url) {
+        // If the youtube_url from the request is null or undefined, retain the existing value from the database
+        // Fetch existing movie data to get the current youtube_url
+        movieModel.getMovieById(id, (err, movie) => {
+            if (err) {
+                return res.status(500).json({ error: 'Failed to fetch movie details' });
+            }
+            youtube_url = movie.youtube_url; // Use the existing youtube_url
+            updateMovieDetails(id, req.body, youtube_url, res); // Update the movie
         });
+    } else {
+        // Proceed to update the movie with the new youtube_url
+        updateMovieDetails(id, req.body, youtube_url, res);
+    }
+};
+
+const updateMovieDetails = (id, movieData, youtube_url, res) => {
+    const { title, description, release_year, genre, image_url } = movieData;
+    movieModel.updateMovie(id, { title, description, release_year, genre, image_url, youtube_url }, (err, result) => {
+        if (err) {
+            res.status(500).json({ error: 'Failed to update movie' });
+        } else {
+            res.json({ message: 'Movie updated successfully', data: result });
+        }
     });
-}
+};
 
 exports.deleteMovie = (req, res) => {
     const id = req.params.id;

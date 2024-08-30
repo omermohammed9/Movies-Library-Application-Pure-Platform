@@ -72,6 +72,7 @@ $(document).ready(() => {
         $('#edit-genre').val(movie.genre);
         $('#edit-image_url').val(movie.image_url);
         $('#edit-movie-id').val(movie.id);
+        $('#edit-youtube-url').val(movie.youtube_url);
     };
 
     const confirmDelete = async (movieId) => {
@@ -120,6 +121,7 @@ $(document).ready(() => {
                 release_year: $('#edit-release_year').val(),
                 genre: $('#edit-genre').val(),
                 image_url: $('#edit-image_url').val(),
+                youtube_url: $('#edit-youtube-url').val(),
             };
             await editMovie(movieId, formData);
             showAlert('Success!', 'Movie updated successfully.', 'success');
@@ -135,21 +137,15 @@ $(document).ready(() => {
 });
 
 $(document).ready(function () {
-    $('#directorInfo').on('show.bs.collapse', function () {
-        // Change the text to 'hide' when the section is opened
+    // Generic handler for all collapse toggles
+    $('.collapse').on('show.bs.collapse', function () {
+        // Find the preceding toggle and change its text to 'hide'
         $(this).prev('.toggle').find('.toggle-icon').text('hide');
     }).on('hide.bs.collapse', function () {
-        // Change the text to 'show' when the section is closed
+        // Find the preceding toggle and change its text to 'show'
         $(this).prev('.toggle').find('.toggle-icon').text('show');
     });
 });
 
-$(document).ready(function () {
-    $('#actorsInfo').on('show.bs.collapse', function () {
-        $('.toggle[data-bs-target="#actorsInfo"] .toggle-icon').text('hide');
-    }).on('hide.bs.collapse', function () {
-        $('.toggle[data-bs-target="#actorsInfo"] .toggle-icon').text('show');
-    });
-});
 
 

@@ -2,15 +2,18 @@
 const collectMovieData = (formData) => {
     console.log(formData.get('title'));
     console.log(formData.get('description'));
+    console.log(formData.get('youtube_url'));
     console.log(formData.get('release_year'));
     console.log(formData.get('add-genre'));
     console.log(formData.get('image_url'));
     console.log(formData.get('director_name'));
     console.log(formData.get('actors'));
+    console.log('YouTube URL:', formData.get('youtube_url'));
 
     return{
         title: formData.get('title'),
         description: formData.get('description'),
+        youtube_url: formData.get('youtube_url'),
         release_year: formData.get('release_year'),
         genre: formData.get('add-genre'),
         image_url: formData.get('image_url'),

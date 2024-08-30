@@ -81,6 +81,11 @@
                         <small id="descriptionHelp" class="form-text text-muted">Maximum 500 characters allowed.</small>
                     </div>
                     <div class="mb-3">
+                        <label for="youtube_url" class="form-label">YouTube Trailer ID</label>
+                        <input type="text" class="form-control" id="youtube_url" name="youtube_url" maxlength="43" required>
+                        <small id="youtubeTrailerIdHelp" class="form-text text-muted">Enter the YouTube Trailer ID.</small>
+                    </div>
+                    <div class="mb-3">
                         <label for="release_year" class="form-label">Release Year</label>
                         <select class="form-control" id="release_year" name="release_year" required>
                             <option value="">Select a year</option>
@@ -112,6 +117,10 @@
                         </label>
                     </div>
 
+                    <div class="mb-3">
+                        <label for="image_url" class="form-label">Image URL</label>
+                        <input type="text" class="form-control" id="image_url" name="image_url" required>
+                    </div>
 
                     <!-- Director Information - Collapsible -->
                     <div class="collapse-section">
@@ -182,12 +191,19 @@
                         <textarea class="form-control" id="edit-description" name="description" required></textarea>
                     </div>
                     <div class="mb-3">
+                        <label for="edit-youtube-url" class="form-label">YouTube Trailer ID</label>
+                        <input type="text" class="form-control" id="edit-youtube-url" name="youtube_url" maxlength="43" required>
+                        <small id="EdityoutubeTrailerIdHelp" class="form-text text-muted">Enter the YouTube Trailer ID.</small>
+                    </div>
+
+                    <div class="mb-3">
                         <label for="edit-release_year" class="form-label">Release Year</label>
                         <select class="form-control" id="edit-release_year" name="release_year" required>
                             <option value="">Select a year</option>
                         </select>
                         <small id="releaseYearUpdate" class="form-text text-muted">Select a year between 1900 and the current year.</small>
                     </div>
+
                     <div class="mb-3">
                         <label for="edit-genre" class="form-label">Genre (Edit)</label>
                         <label>
@@ -236,3 +252,11 @@
 <script src="frontend/js/populateYears.js"></script>
 </body>
 </html>
+
+
+<!--
+
+
+
+
+-->
